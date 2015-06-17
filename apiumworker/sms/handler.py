@@ -12,15 +12,15 @@ logger = get_task_logger('apium')
 
 # 登录事件
 @app.task(serializer='json', name='yunkai.onLogin')
-def login_handler(nickName, userId, avatar):
+def login_handler(userId, nickName, avatar):
     logger.info('%d: %s' % (userId, nickName))
-    url = 'http://hedy.zephyre.me/chats'
+    url = 'http://hedy.zephyre.me/chats'#hedylogos发消息接口
     data = {
         'chatType' : 'single',
         'contents' : 'welcome %s login' % nickName,
         'msgType' : 0,
-        'receiver' : 100068,
-        'sender' : 100000
+        'receiver' : {'userId':100068, 'nickName': nickName, 'avatar': avatar},
+        'sender' : {'userId':100000}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -43,15 +43,15 @@ def update_userinfo_handler(userId, nickName, avatar):
 
 # 添加联系人事件，A添加B
 @app.task(serializer='json', name='yunkai.onAddContacts')
-def add_contacts_handler(userA, userB, userBNickName, userBAvatar):
-    logger.info('%d %d %s %s' % (userA, userB, userBNickName, userBAvatar))
+def add_contacts_handler(userA, userANickName, userAAvatar, userB, userBNickName, userBAvatar):
+    logger.info('%d %s %s %d %s %s' % (userA, userANickName, userAAvatar, userB, userBNickName, userBAvatar))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType' : 'single',
         'contents' : 'You are friends with %s' % userBNickName,
         'msgType' : 0,
-        'receiver' : userA,
-        'sender' : userB
+        'receiver' : {'userId': userA, 'nickName': userANickName, 'avatar': userAAvatar},
+        'sender' : {'userId': userB, 'nickName': userBNickName, 'avatar': userBAvatar}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -59,15 +59,15 @@ def add_contacts_handler(userA, userB, userBNickName, userBAvatar):
 
 # 删除联系人事件，A删除B
 @app.task(serializer='json', name='yunkai.onRemoveContacts')
-def remove_contacts_handler(userA, userB, userBNickName, userBAvatar):
-    logger.info('%d %d %s %s' % (userA, userB, userBNickName, userBAvatar))
+def remove_contacts_handler(userA, userANickName, userAAvatar, userB, userBNickName, userBAvatar):
+    logger.info('%d %s %s %d %s %s' % (userA, userANickName, userAAvatar, userB, userBNickName, userBAvatar))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType' : 'single',
         'contents' : 'remove friends suceess!',
         'msgType' : 0,
-        'receiver' : userB,
-        'sender' : userA
+        'receiver' : {'userId': userA, 'nickName': userANickName, 'avatar': userAAvatar},
+        'sender' : {'userId': userB, 'nickName': userBNickName, 'avatar': userBAvatar}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
