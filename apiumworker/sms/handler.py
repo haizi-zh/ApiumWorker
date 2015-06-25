@@ -12,14 +12,14 @@ logger = get_task_logger('apium')
 
 # 登录事件
 @app.task(serializer='json', name='yunkai.onLogin')
-def login_handler(userId, nickName, avatar):
+def login_handler(userId, nickName, info):
     logger.info('%d: %s' % (userId, nickName))
     url = 'http://hedy.zephyre.me/chats'#hedylogos发消息接口
     data = {
         'chatType' : 'single',
         'contents' : 'welcome %s login' % nickName,
         'msgType' : 0,
-        'receiver' : {'userId':100068, 'nickName': nickName, 'avatar': avatar},
+        'receiver' : {'userId':100068, 'nickName': nickName},
         'sender' : {'userId':100000}
     }
     headers = {'Content-Type': 'application/json'}
@@ -41,33 +41,33 @@ def update_userinfo_handler(userId, nickName, avatar):
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
 
+
 # 添加联系人事件，A添加B
 @app.task(serializer='json', name='yunkai.onAddContacts')
-def add_contacts_handler(userA, userANickName, userAAvatar, userB, userBNickName, userBAvatar):
-    logger.info('%d %s %s %d %s %s' % (userA, userANickName, userAAvatar, userB, userBNickName, userBAvatar))
+def add_contacts_handler(userA, nickNameA, avatarA, userB, nickNameB, avatarB):
+    logger.info('%d %s %s %d %s %s' % (userA, nickNameA, avatarA, userB, nickNameB, avatarB))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType' : 'single',
-        'contents' : 'You are friends with %s' % userBNickName,
+        'contents' : 'You are friends with %s' % nickNameB,
         'msgType' : 0,
-        'receiver' : {'userId': userA, 'nickName': userANickName, 'avatar': userAAvatar},
-        'sender' : {'userId': userB, 'nickName': userBNickName, 'avatar': userBAvatar}
+        'receiver' : {'userId': userB, 'nickName': nickNameA, 'avatar': avatarA},
+        'sender' : {'userId': 10000, 'nickName': nickNameB, 'avatar': avatarB}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
 
-
 # 删除联系人事件，A删除B
 @app.task(serializer='json', name='yunkai.onRemoveContacts')
-def remove_contacts_handler(userA, userANickName, userAAvatar, userB, userBNickName, userBAvatar):
-    logger.info('%d %s %s %d %s %s' % (userA, userANickName, userAAvatar, userB, userBNickName, userBAvatar))
+def remove_contacts_handler(userA, nickNameA, avatarA, userB, nickNameB, avatarB):
+    logger.info('%d %s %s %d %s %s' % (userA, nickNameA, avatarA, userB, nickNameB, avatarB))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType' : 'single',
         'contents' : 'remove friends suceess!',
         'msgType' : 0,
-        'receiver' : {'userId': userA, 'nickName': userANickName, 'avatar': userAAvatar},
-        'sender' : {'userId': userB, 'nickName': userBNickName, 'avatar': userBAvatar}
+        'receiver' : {'userId': 100068, 'nickName': nickNameA, 'avatar': avatarA},
+        'sender' : {'userId': 10000, 'nickName': nickNameB, 'avatar': avatarB}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -75,8 +75,8 @@ def remove_contacts_handler(userA, userANickName, userAAvatar, userB, userBNickN
 
 # 用户密码修改事件
 @app.task(serializer='json', name='yunkai.onResetPassword')
-def reset_password_handler(userId):
-    logger.info('%d' % userId)
+def reset_password_handler(userId, nickName, avatar):
+    logger.info('%d %s %s' % (userId, nickName, avatar))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType' : 'single',
@@ -107,62 +107,15 @@ def create_user_handler(userId, nickName, avatar):
 
 # 创建群组事件
 @app.task(serializer='json', name='yunkai.onCreateChatGroup')
-def create_chatgroup_handler(chatGroupId, name, groupDesc, groupType, avatar, tags, admin, participants, visible):
-    logger.info('%d: %s %s' % (chatGroupId, name, avatar))
+def create_chatgroup_handler(chatGroupId, name, avatar, admin, participants):
+    logger.info('%d: %s' % (chatGroupId, name))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType' : 'single',
         'contents' : 'Create chat group %d success' % chatGroupId,
         'msgType' : 0,
-        'receiver' : 100001,
-        'sender' : 100000
-    }
-    headers = {'Content-Type': 'application/json'}
-    requests.post(url, data=json.dumps(data), headers=headers)
-
-
-# 修改群组信息事件
-@app.task(serializer='json', name='yunkai.onModChatGroup')
-def update_chatgroup_handler(chatGroupId, name, groupDesc, avatar, tags, admin, visible):
-    logger.info('%d: %s %s' % (chatGroupId, name, avatar))
-    url = 'http://hedy.zephyre.me/chats'
-    data = {
-        'chatType' : 'single',
-        'contents' : '',
-        'msgType' : 0,
-        'receiver' : 100001,
-        'sender' : 100000
-    }
-    headers = {'Content-Type': 'application/json'}
-    requests.post(url, data=json.dumps(data), headers=headers)
-
-
-# 添加讨论组成员事件
-@app.task(serializer='json', name='yunkai.onAddGroupMembers')
-def create_user_handler(chatGroupId, participants):
-    logger.info('%d' % chatGroupId)
-    url = 'http://hedy.zephyre.me/chats'
-    data = {
-        'chatType' : 'single',
-        'contents' : '',
-        'msgType' : 0,
-        'receiver' : 100001,
-        'sender' : 100000
-    }
-    headers = {'Content-Type': 'application/json'}
-    requests.post(url, data=json.dumps(data), headers=headers)
-
-# 删除讨论组成员事件
-@app.task(serializer='json', name='yunkai.onRemoveGroupMembers')
-def create_user_handler(chatGroupId, participants):
-    logger.info('%d' % chatGroupId)
-    url = 'http://hedy.zephyre.me/chats'
-    data = {
-        'chatType' : 'single',
-        'contents' : '',
-        'msgType' : 0,
-        'receiver' : 100001,
-        'sender' : 100000
+        'receiver' : 100068,
+        'sender' : 100053
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
