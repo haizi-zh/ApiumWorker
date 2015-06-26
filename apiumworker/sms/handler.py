@@ -121,3 +121,48 @@ def create_chatgroup_handler(chatGroupId, name, avatar, admin, participants):
     requests.post(url, data=json.dumps(data), headers=headers)
 
 
+# 修改群组信息事件
+@app.task(serializer='json', name='yunkai.onModChatGroup')
+def update_chatgroup_handler(chatGroupId, filed):
+    logger.info('chatGroupId = %d' % (chatGroupId))
+    url = 'http://hedy.zephyre.me/chats'
+    data = {
+        'chatType' : 'single',
+        'contents' : '',
+        'msgType' : 0,
+        'receiver' : 100068,
+        'sender' : 100000
+    }
+    headers = {'Content-Type': 'application/json'}
+    requests.post(url, data=json.dumps(data), headers=headers)
+
+
+# 添加讨论组成员事件
+@app.task(serializer='json', name='yunkai.onAddGroupMembers')
+def add_chatgroup_members_handler(chatGroupId, participants, userInfos):
+    logger.info('%d' % chatGroupId)
+    url = 'http://hedy.zephyre.me/chats'
+    data = {
+        'chatType' : 'single',
+        'contents' : '',
+        'msgType' : 0,
+        'receiver' : 100068,
+        'sender' : 100000
+    }
+    headers = {'Content-Type': 'application/json'}
+    requests.post(url, data=json.dumps(data), headers=headers)
+
+# 删除讨论组成员事件
+@app.task(serializer='json', name='yunkai.onRemoveGroupMembers')
+def remove_chatgroup_members_handler(chatGroupId, participants, userInfos):
+    logger.info('%d' % chatGroupId)
+    url = 'http://hedy.zephyre.me/chats'
+    data = {
+        'chatType' : 'single',
+        'contents' : '',
+        'msgType' : 0,
+        'receiver' : 100068,
+        'sender' : 100000
+    }
+    headers = {'Content-Type': 'application/json'}
+    requests.post(url, data=json.dumps(data), headers=headers)
