@@ -123,7 +123,7 @@ def create_chatgroup_handler(chatGroupId, name, avatar, admin, participants):
 
 # 修改群组信息事件
 @app.task(serializer='json', name='yunkai.onModChatGroup')
-def update_chatgroup_handler(chatGroupId, filed):
+def update_chatgroup_handler(chatGroupId, fields):
     logger.info('chatGroupId = %d' % (chatGroupId))
     url = 'http://hedy.zephyre.me/chats'
     data = {

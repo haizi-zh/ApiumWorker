@@ -16,5 +16,6 @@ CELERY_QUEUES = (
     Queue('yunkai.createChatGroup.sms', Exchange('yunkai.createChatGroup', type='fanout')),
     Queue('yunkai.addGroupMembers.sms', Exchange('yunkai.addGroupMembers', type='fanout')),
     Queue('yunkai.removeGroupMembers.sms', Exchange('yunkai.removeGroupMembers', type='fanout')),
+    Queue('yunkai.modChatGroup.sms', Exchange('yunkai.modChatGroup', type='fanout')),
 )
 

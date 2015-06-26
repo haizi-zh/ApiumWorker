@@ -20,7 +20,7 @@ def get_etcd_port():
 
     val = os.getenv('ETCD_PORT')
     if val is None:
-        print 'Cannot find environment variable ETCD_HOST, use 2379 as default.'
+        print 'Cannot find environment variable ETCD_PORT, use 2379 as default.'
         val = 2379
     else:
         val = int(val)
