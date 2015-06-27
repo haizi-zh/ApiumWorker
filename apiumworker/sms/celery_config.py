@@ -5,7 +5,6 @@ from kombu import Exchange, Queue
 
 CELERY_ACCEPT_CONTENT = ['json']
 
-
 CELERY_QUEUES = (
     Queue('yunkai.createUser.sms', Exchange('yunkai.createUser', type='fanout')),
     Queue('yunkai.login.sms', Exchange('yunkai.login', type='fanout')),
