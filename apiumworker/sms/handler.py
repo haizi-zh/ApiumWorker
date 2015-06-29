@@ -13,14 +13,16 @@ logger = get_task_logger('apium')
 # 登录事件
 @app.task(serializer='json', name='yunkai.onLogin')
 def login_handler(user, source, miscInfo):
-    logger.info('%s' % source)
+    # test = json.dumps(user)
+    # userInfo = json.loads(test)
+    logger.info('%d %s %s' % (user['id'], user['nickName'], source))
     url = 'http://hedy.zephyre.me/chats'  # hedylogos发消息接口
     data = {
         'chatType': 'single',
-        'contents': 'welcome login',
+        'contents': 'welcome %s login' % user['id'],
         'msgType': 0,
-        'receiver': 100068,#{'userId': 100068, 'nickName': nickName},
-        'sender': 100000#{'userId': 100000}
+        'receiver': user,
+        'sender': {'id': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -29,14 +31,14 @@ def login_handler(user, source, miscInfo):
 # 用户修改信息事件
 @app.task(serializer='json', name='yunkai.onModUserInfo')
 def update_userinfo_handler(user, miscInfo):
-    logger.info('modify user info')
+    logger.info('%d %s' % (user['id'], user['nickName']))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': 'update user info success',
+        'contents': 'update user %d info success' % user['id'],
         'msgType': 0,
-        'receiver': 100068,
-        'sender': 100000
+        'receiver': user,
+        'sender': {'id': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -45,14 +47,15 @@ def update_userinfo_handler(user, miscInfo):
 # 发送好友请求事件
 @app.task(serializer='json', name='yunkai.onSendContactRequest')
 def send_contact_request_handler(requestId, message, sender, receiver, miscInfo):
-    logger.info('%s' % message)
+    logger.info('requestId = %s , message = %s' % (requestId, message))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': '发送好友请求：%s' % message,
+        'requestId': requestId,
+        'contents': '%s请求添加好友, 附言:%s' % (sender['nickName'], message),
         'msgType': 0,
-        'receiver': 100068,
-        'sender': 100000
+        'receiver': receiver,
+        'sender': sender
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -61,14 +64,15 @@ def send_contact_request_handler(requestId, message, sender, receiver, miscInfo)
 # 接受好友请求事件
 @app.task(serializer='json', name='yunkai.onAcceptContactRequest')
 def accept_contact_request_handler(requestId, sender, receiver, miscInfo):
-    logger.info('onAcceptContactRequest')
+    logger.info('requestId = %s' % requestId)
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': '接受了好友请求',
+        'requestId': requestId,
+        'contents': '%s 接受了您的好友请求' % sender['nickName'],
         'msgType': 0,
-        'receiver': 100068,
-        'sender': 100000
+        'receiver': receiver,
+        'sender': sender
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -77,29 +81,31 @@ def accept_contact_request_handler(requestId, sender, receiver, miscInfo):
 # 拒绝好友请求事件
 @app.task(serializer='json', name='yunkai.onRejectContactRequest')
 def reject_contact_request_handler(requestId, message, sender, receiver, miscInfo):
-    logger.info('%s' % message)
+    logger.info('%s' % requestId)
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': '拒绝了好友请求',
+        'requestId': requestId,
+        'contents': '%s 拒绝了您的好友请求, 附言: %s' % (sender['nickName'], message),
         'msgType': 0,
-        'receiver': 100068,
-        'sender': 100000
+        'receiver': receiver,
+        'sender': sender
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
 
+
 # 添加联系人事件，A添加B
 @app.task(serializer='json', name='yunkai.onAddContacts')
 def add_contacts_handler(user, targets, miscInfo):
-    logger.info('你们成为好友')
+    logger.info('%s and %s be friends' % (user['nickName'], targets['nickName']))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': 'You are friends！',
+        'contents': '%s and %s be friends' % (user['nickName'], targets['nickName']),
         'msgType': 0,
-        'receiver': 100068,#{'userId': userB, 'nickName': nickNameA, 'avatar': avatarA},
-        'sender': 100000#{'userId': 10000, 'nickName': nickNameB, 'avatar': avatarB}
+        'receiver': targets,
+        'sender': user
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -108,14 +114,14 @@ def add_contacts_handler(user, targets, miscInfo):
 # 删除联系人事件，A删除B
 @app.task(serializer='json', name='yunkai.onRemoveContacts')
 def remove_contacts_handler(user, targets, miscInfo):
-    logger.info('解除好友关系')
+    logger.info('%s and %s be not friends' % (user['nickName'], targets['nickName']))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': 'remove friends suceess!',
+        'contents': '%s and %s be not friends' % (user['nickName'], targets['nickName']),
         'msgType': 0,
-        'receiver': 100068,#{'userId': 100068, 'nickName': nickNameA, 'avatar': avatarA},
-        'sender': 100000#{'userId': 10000, 'nickName': nickNameB, 'avatar': avatarB}
+        'receiver': targets,
+        'sender': user
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -128,10 +134,10 @@ def reset_password_handler(user, miscInfo):
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': 'reset password success!',
+        'contents': '%s reset password success!' % user['nickName'],
         'msgType': 0,
-        'receiver': 1000068,
-        'sender': 100000
+        'receiver': user,
+        'sender': {'id': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -144,10 +150,10 @@ def create_user_handler(user, miscInfo):
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': 'congratulations to you be a lvxingpai member',
+        'contents': '%s, congratulations to you be a lvxingpai member' % user['nickName'],
         'msgType': 0,
-        'receiver': 100068,
-        'sender': 100000
+        'receiver': user,
+        'sender': {'id': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -156,14 +162,14 @@ def create_user_handler(user, miscInfo):
 # 创建群组事件
 @app.task(serializer='json', name='yunkai.onCreateChatGroup')
 def create_chatgroup_handler(chatGroup, creator, participants, miscInfo):
-    logger.info('Create chat group')
+    logger.info('%s create chat group %s success' % (creator['nickName'], chatGroup['name']))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': 'Create chat group success',
+        'contents': '%s create chat group %s success' % (creator['nickName'], chatGroup['name']),
         'msgType': 0,
-        'receiver': 100068,
-        'sender': 100053
+        'receiver': participants,
+        'sender': {'id': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -172,11 +178,11 @@ def create_chatgroup_handler(chatGroup, creator, participants, miscInfo):
 # 修改群组信息事件
 @app.task(serializer='json', name='yunkai.onModChatGroup')
 def update_chatgroup_handler(chatGroupId, miscInfo):
-    logger.info('chatGroupId = %d' % (chatGroupId))
+    logger.info('chatGroup %d be updated' % (chatGroupId))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': '',
+        'contents': 'chatGroup %d be updated' % (chatGroupId),
         'msgType': 0,
         'receiver': 100068,
         'sender': 100000
@@ -187,15 +193,16 @@ def update_chatgroup_handler(chatGroupId, miscInfo):
 
 # 添加讨论组成员事件
 @app.task(serializer='json', name='yunkai.onAddGroupMembers')
-def add_chatgroup_members_handler(chatGroup, operator, targets, miscInfo):#chatGroup包含chatGroupId,name,avatar,participants
-    # logger.info('%d' % chatGroupId)
+def add_chatgroup_members_handler(chatGroup, operator, targets,
+                                  miscInfo):  # chatGroup包含chatGroupId,name,avatar,participants
+    logger.info('%s 在 %s 添加了成员' % (operator['nickName'], chatGroup['nickName']))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': '',
+        'contents': '%s 在 %s 添加了成员' % (operator['nickName'], chatGroup['nickName']),
         'msgType': 0,
-        'receiver': 100068,
-        'sender': 100000
+        'receiver': targets,
+        'sender': operator
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -204,14 +211,14 @@ def add_chatgroup_members_handler(chatGroup, operator, targets, miscInfo):#chatG
 # 删除讨论组成员事件
 @app.task(serializer='json', name='yunkai.onRemoveGroupMembers')
 def remove_chatgroup_members_handler(chatGroup, operator, targets, miscInfo):
-    # logger.info('%d' % chatGroupId)
+    logger.info('%s 在 %s 添加了成员' % (operator['nickName'], chatGroup['nickName']))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': '',
+        'contents': '%s 在 %s 删除了成员' % (operator['nickName'], chatGroup['nickName']),
         'msgType': 0,
-        'receiver': 100068,
-        'sender': 100000
+        'receiver': targets,
+        'sender': operator
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)

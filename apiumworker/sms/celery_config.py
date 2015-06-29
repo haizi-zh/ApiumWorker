@@ -2,9 +2,7 @@ __author__ = 'zephyre'
 
 from kombu import Exchange, Queue
 
-
 CELERY_ACCEPT_CONTENT = ['json']
-
 
 CELERY_QUEUES = (
     Queue('yunkai.createUser.sms', Exchange('yunkai.createUser', type='fanout')),
@@ -21,4 +19,3 @@ CELERY_QUEUES = (
     Queue('yunkai.acceptContactRequest.sms', Exchange('yunkai.acceptContactRequest', type='fanout')),
     Queue('yunkai.rejectContactRequest.sms', Exchange('yunkai.rejectContactRequest', type='fanout')),
 )
-
