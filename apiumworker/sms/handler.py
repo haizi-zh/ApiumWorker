@@ -15,14 +15,14 @@ logger = get_task_logger('apium')
 def login_handler(user, source, miscInfo):
     # test = json.dumps(user)
     # userInfo = json.loads(test)
-    logger.info('%d %s %s' % (user['id'], user['nickName'], source))
+    logger.info('%d %s %s' % (user['userId'], user['nickName'], source))
     url = 'http://hedy.zephyre.me/chats'  # hedylogos发消息接口
     data = {
         'chatType': 'single',
-        'contents': 'welcome %s login' % user['id'],
+        'contents': 'welcome %s login' % user['nickName'],
         'msgType': 0,
         'receiver': user,
-        'sender': {'id': 100000, 'nickName': '派派'}
+        'sender': {'userId': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -31,14 +31,14 @@ def login_handler(user, source, miscInfo):
 # 用户修改信息事件
 @app.task(serializer='json', name='yunkai.onModUserInfo')
 def update_userinfo_handler(user, miscInfo):
-    logger.info('%d %s' % (user['id'], user['nickName']))
+    logger.info('%d %s' % (user['userId'], user['nickName']))
     url = 'http://hedy.zephyre.me/chats'
     data = {
         'chatType': 'single',
-        'contents': 'update user %d info success' % user['id'],
+        'contents': 'update user %d info success' % user['userId'],
         'msgType': 0,
         'receiver': user,
-        'sender': {'id': 100000, 'nickName': '派派'}
+        'sender': {'userId': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -137,7 +137,7 @@ def reset_password_handler(user, miscInfo):
         'contents': '%s reset password success!' % user['nickName'],
         'msgType': 0,
         'receiver': user,
-        'sender': {'id': 100000, 'nickName': '派派'}
+        'sender': {'userId': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -153,7 +153,7 @@ def create_user_handler(user, miscInfo):
         'contents': '%s, congratulations to you be a lvxingpai member' % user['nickName'],
         'msgType': 0,
         'receiver': user,
-        'sender': {'id': 100000, 'nickName': '派派'}
+        'sender': {'userId': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -169,7 +169,7 @@ def create_chatgroup_handler(chatGroup, creator, participants, miscInfo):
         'contents': '%s create chat group %s success' % (creator['nickName'], chatGroup['name']),
         'msgType': 0,
         'receiver': participants,
-        'sender': {'id': 100000, 'nickName': '派派'}
+        'sender': {'userId': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -185,7 +185,7 @@ def update_chatgroup_handler(chatGroupId, miscInfo):
         'contents': 'chatGroup %d be updated' % (chatGroupId),
         'msgType': 0,
         'receiver': 100068,
-        'sender': 100000
+        'sender': {'userId': 100000, 'nickName': '派派'}
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
