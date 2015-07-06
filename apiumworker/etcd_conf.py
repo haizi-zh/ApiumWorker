@@ -66,7 +66,7 @@ def parse_cl_args():
     import sys
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--module', '-m', nargs='*', choices=['sms'])
+    parser.add_argument('--module', '-m', nargs='*', choices=['sms', 'contact'])
     parser.add_argument('--runlevel', choices=['production', 'dev', 'test'])
     extracted_args, left_over = parser.parse_known_args()
 
