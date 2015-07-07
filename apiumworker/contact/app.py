@@ -31,8 +31,11 @@ def __init_app():
     conf = get_config(['yunkai', 'rabbitmq'], [(apiumworker_name, 'apiumworker')], cache_key='contact')
     # conf_name = conf['contact']['name']#contact
     # conf_port = conf['contact-dev']['port']#9000
-    host = conf['services']['yunkai']['host']
-    port = conf['services']['yunkai']['port']
+
+    server_entries = conf['services']['yunkai'].values()
+    # 默认只使用第一个节点
+    host = server_entries[0]['host']
+    port = server_entries[0]['port']
 
     conf_rabbitmq = conf['apiumworker']['rabbitmq']
     service_rabbitmq = conf['services']['rabbitmq']
