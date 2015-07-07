@@ -28,7 +28,7 @@ def __init_app():
     # conf = get_config(['smscenter', 'rabbitmq'], ['smscenter', (apiumworker_name, 'apiumworker')], cache_key='sms')
     # conf_rabbitmq = conf['apiumworker']['rabbitmq']
     # service_rabbitmq = conf['services']['rabbitmq']
-    conf = get_config(['yunkai', 'rabbitmq'], [(apiumworker_name, 'apiumworker')], cache_key='contact')
+    conf = get_config(['yunkai', 'rabbitmq', ('hedy-dev', 'hedy')], [(apiumworker_name, 'apiumworker')], cache_key='contact')
     # conf_name = conf['contact']['name']#contact
     # conf_port = conf['contact-dev']['port']#9000
 
@@ -38,7 +38,8 @@ def __init_app():
     port = server_entries[0]['port']
 
     conf_rabbitmq = conf['apiumworker']['rabbitmq']
-    service_rabbitmq = conf['services']['rabbitmq']
+    # 默认使用第一个RabbitMQ节点
+    service_rabbitmq = conf['services']['rabbitmq'].values()[0]
 
     from apiumworker.contact import celery_config
     the_app = Celery('ApiumWorker', broker='amqp://%s:%s@%s:%d/%s' %

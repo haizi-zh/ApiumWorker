@@ -44,8 +44,8 @@ def update_userinfo_handler(user, miscInfo):
 # 发送好友请求事件
 @app.task(serializer='json', name='contact.onSendContactRequest')
 def send_contact_request_handler(requestId, message, sender, receiver, miscInfo):
-    logger.info('requestId = %s , message = %s, sender = %d, receiver = %d' % (
-    requestId, message, sender['userId'], receiver['userId']))
+    logger.info('requestId = %s , message = %s, sender = %d, receiver = %d' %
+                (requestId, message, sender['userId'], receiver['userId']))
     url = 'http://hedy.zephyre.me/chats'
     cmd = {
         'chatType': 'single',
