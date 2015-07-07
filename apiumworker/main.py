@@ -8,7 +8,8 @@ def worker():
 
     for m in project_conf['modules']:
         result = imp.find_module(m)
-        app = imp.load_module(m, *result).app.app
+        module = imp.load_module(m, *result)
+        app = module.app.app
         app.worker_main(argv=cmd_args)
 
 

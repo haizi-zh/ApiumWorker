@@ -31,13 +31,43 @@ etcd_url = 'http://%s:%d' % (get_etcd_host(), get_etcd_port())
 
 
 def get_service(service_name, alias):
+    """
+    获得服务的入口信息（host:port）
+
+    所谓服务，是指etcd的服务发现部分的数据，比如：http://etcd:2379/v2/keys/backends/mongo?recursive=true
+    上面一条数据中，记录了一组MongoDB服务器的入口地址。之所以是一组而不是一个，是为了高可用扩展的需求。
+
+    上述服务的service_name为mongo。默认情况下，如果将该服务读入系统配置，其配置名就是services.mongo。
+    在这里，我们可以对其取一个别名，比如mongodb-alias，那么该服务在系统配置中的键就是services.mongodb-alias
+
+    :param service_name: 服务名称
+    :param alias: 服务别名
+    :return:
+    """
     url = '%s/v2/keys/backends/%s' % (etcd_url, service_name)
+
+    def get_service_entry(entry):
+        """
+        获得单一服务器地址
+
+        比如，entry数据为：
+        {"key":"/backends/mongo/ec6f787e91762f28741d01d6e0e7841c395f5f3ddcfa07db1c873e3a7ad6e6b3",
+        "value":"192.168.100.2:31001","expiration":"2015-07-07T01:46:31.757230168Z","ttl":18,
+        "modifiedIndex":5703768,"createdIndex":5703768}
+
+        则返回一个tuple：("ec6f787e91762f28741d01d6e0e7841c395f5f3ddcfa07db1c873e3a7ad6e6b3", {"host": "192.168.100.2", "port": 31001})
+        这在复制集的情况下很有用
+        """
+        key = entry['key'].split('/')[-1]
+        value = entry['value'].split(':')
+        host = value[0]
+        port = int(value[1])
+
+        return key, {'host': host, 'port': port}
+
     try:
         nodes = requests.get(url).json()['node']['nodes']
-        values = nodes[0]['value'].split(':')
-        host = values[0]
-        port = int(values[1])
-        return {alias: {'host': host, 'port': port}}
+        return {alias: dict(map(get_service_entry, nodes))}
     except (KeyError, IndexError, ValueError):
         return None
 
@@ -66,7 +96,7 @@ def parse_cl_args():
     import sys
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--module', '-m', nargs='*', choices=['sms'])
+    parser.add_argument('--module', '-m', nargs='*', choices=['sms', 'contact'])
     parser.add_argument('--runlevel', choices=['production', 'dev', 'test'])
     extracted_args, left_over = parser.parse_known_args()
 
