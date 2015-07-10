@@ -14,6 +14,22 @@ logger = get_task_logger('apium')
 hedy_host = get_config(cache_key='contact')['services']['hedy'].values()[0]['host']
 hedy_port = get_config(cache_key='contact')['services']['hedy'].values()[0]['port']
 
+# 系统常量
+
+# 服务号ID
+systemId = 0
+# 普通消息类型
+common_msg = 0
+# cmd消息类型
+cmd_msg = 100
+# tips消息类型
+tips_msg = 200
+# 添加讨论组成员tips类型
+add_members_tips = 2001
+# 删除讨论组成员tips类型
+remove_members_tips = 2002
+# 修改讨论组信息tips类型
+mod_chatgroup_tips = 2003
 
 # 登录事件
 @app.task(serializer='json', name='yunkai.onLogin')
@@ -21,22 +37,20 @@ def login_handler(**kwargs):
     user = kwargs['user']
     source = kwargs['source']
 
-    # test = json.dumps(user)
-    # userInfo = json.loads(test)
     logger.info('%d %s %s' % (user['userId'], user['nickName'], source))
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')  # hedylogos发消息接口
     welcome = u'欢迎回来'
     headers = {'Content-Type': 'application/json'}
 
-    data = {
+    message = {
         'chatType': 'single',
         'contents': welcome,
-        'msgType': 0,
-        'receiver': user['userId'],  # user,
-        'sender': 100015 #{'userId': 100015, 'nickName': '派派'}
+        'msgType': common_msg,
+        'receiver': user['userId'],
+        'sender': systemId
     }
 
-    requests.post(url, data=json.dumps(data), headers=headers)
+    requests.post(url, data=json.dumps(message), headers=headers)
 
 
 # 用户修改信息事件
@@ -45,15 +59,15 @@ def update_userinfo_handler(**kwargs):
     user = kwargs['user']
     logger.info('%d %s' % (user['userId'], user['nickName']))
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
-    data = {
+    message = {
         'chatType': 'single',
         'contents': 'update user %d info success' % user['userId'],
         'msgType': 0,
-        'receiver': user['userId'],  # user,
-        'sender': 10000  # {'userId': 10000, 'nickName': '派派'}
+        'receiver': user['userId'],
+        'sender': systemId
     }
     headers = {'Content-Type': 'application/json'}
-    requests.post(url, data=json.dumps(data), headers=headers)
+    requests.post(url, data=json.dumps(message), headers=headers)
 
 
 # 发送好友请求事件
@@ -68,19 +82,21 @@ def send_contact_request_handler(**kwargs):
                 (request_id, message, sender['userId'], receiver['userId']))
 
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
-    cmd = {
-        'chatType': 'single',
-        'msgType': 100,
-        'contents': {
-            "action": "F_ADD",
+    content = {"action": "F_ADD",
             "userId": sender['userId'],
             "nickName": sender['nickName'],
             "avatar": sender['avatar'],
             "requestId": request_id,
             "message": message
         }
-        # 'receiver': receiver['userId'],
-        # 'sender': 0
+    content2Str = json.dumps(content)
+    logger.info('**********%s***************' % content2Str)
+    cmd = {
+        'chatType': 'single',
+        'msgType': cmd_msg,
+        'contents': '%s' % content2Str,
+        'receiver': receiver['userId'],
+        'sender': systemId
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(cmd), headers=headers)
@@ -95,16 +111,20 @@ def accept_contact_request_handler(**kwargs):
 
     logger.info('requestId = %s,sender = %d,receiver = %d' % (request_id, sender['userId'], receiver['userId']))
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
-    cmd = {
-        'chatType': 'single',
-        'msgType': 100,
-        'contents': {
+    contents = {
             "action": "F_AGREE",
             "userId": receiver['userId'],
             "nickName": receiver['nickName'],
             "avatar": receiver['avatar'],
             "requestId": request_id
         }
+    contents2Str = json.dumps(contents)
+    cmd = {
+        'chatType': 'single',
+        'msgType': cmd_msg,
+        'contents': '%s' % contents2Str,
+        'receiver': sender['userId'],
+        'sender': systemId
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(cmd), headers=headers)
@@ -121,7 +141,7 @@ def reject_contact_request_handler(**kwargs):
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
     cmd = {
         'chatType': 'single',
-        'msgType': 100,
+        'msgType': cmd_msg,
         'contents': {
             "action": "F_REJECT",
             "userId": sender['userId'],
@@ -146,9 +166,9 @@ def add_contacts_handler(**kwargs):
     data = {
         'chatType': 'single',
         'contents': '%s and %s be friends' % (user['nickName'], target['nickName']),
-        'msgType': 0,
-        'receiver': user['userId'],  # targets,
-        'sender': target['userId']  # user
+        'msgType': common_msg,
+        'receiver': user['userId'],
+        'sender': target['userId']
     }
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
@@ -220,15 +240,19 @@ def create_chatgroup_handler(**kwargs):
 
     logger.info('%s create chat group %s success' % (creator['nickName'], chat_group['name']))
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
-    data = {
-        'chatType': 'single',
-        'contents': '%s create chat group %s success' % (creator['nickName'], chat_group['name']),
-        'msgType': 0,
-        'receiver': creator['userId'],  # participants,
-        'sender': 10000  # {'userId': 10000, 'nickName': '派派'}
+    tips = {
+        'msgType': tips_msg,
+        'creator': {
+            'userId': creator['userId'],
+            'nickName': creator['nickName']
+        },
+        'contents': {
+            'tipType': 2004,
+            'name': chat_group['name']
+        }
     }
     headers = {'Content-Type': 'application/json'}
-    requests.post(url, data=json.dumps(data), headers=headers)
+    requests.post(url, data=json.dumps(tips), headers=headers)
 
 
 # 修改群组信息事件
@@ -240,13 +264,13 @@ def update_chatgroup_handler(**kwargs):
     logger.info('chatGroup %d be updated' % (chat_group['chatGroupId']))
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
     tips = {
-        'msgType': 200,
+        'msgType': tips_msg,
         'operator': {
             'userId': operator['userId'],
             'nickName': operator['nickName']
         },
         'contents': {
-            'tipType': 2003,
+            'tipType': mod_chatgroup_tips,
             'name': chat_group['name']
         }
     }
@@ -261,26 +285,26 @@ def add_chatgroup_members_handler(**kwargs):
     targets = kwargs['targets']
     chat_group = kwargs['chatGroup']
 
-    logger.info('%s 在 %s 添加了成员' % (operator['nickName'], chat_group['nickName']))
+    logger.info(u'%s 在 %s 添加了成员' % (operator['nickName'], chat_group['name']))
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
-
-    tips = {
-        'msgType': 200,
-        'contents': {
-            'tipType': 2001,
+    contents = {
+            'tipType': add_members_tips,
             'operator': {
                 'userId': operator['userId'],
                 'nickName': operator['nickName']
             },
-            'targets': [{
-                            'userId': targets['userId'],
-                            'nickName': targets['nickName']
-                        }],
+            'targets': targets,
             'chatGroupId': chat_group['chatGroupId']
         }
+    contents2Str = json.dumps(contents)
+    tips = {
+        'chatType': 'group',
+        'msgType': tips_msg,
+        'contents': '%s' % contents2Str,
+        'receiver': chat_group['chatGroupId'],
+        'sender': operator['userId']
     }
     headers = {'Content-Type': 'application/json'}
-    # requests.post(url, data=json.dumps(cmd), headers=headers)
     requests.post(url, data=json.dumps(tips), headers=headers)
 
 
@@ -291,24 +315,24 @@ def remove_chatgroup_members_handler(**kwargs):
     chat_group = kwargs['chatGroup']
     targets = kwargs['targets']
 
-    logger.info('%s 在 %s 添加了成员' % (operator['nickName'], chat_group['nickName']))
+    logger.info(u'%s 在 %s 添加了成员' % (operator['nickName'], chat_group['name']))
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
-
-    tips = {
-        'msgType': 200,
-        'contents': {
-            'tipType': 2002,
+    contents = {
+            'tipType': remove_members_tips,
             'operator': {
                 'userId': operator['userId'],
                 'nickName': operator['nickName']
             },
-            'targets': [{
-                            'userId': targets['userId'],
-                            'nickName': targets['nickName']
-                        }],
+            'targets': targets,
             'chatGroupId': chat_group['chatGroupId']
         }
+    contents2Str = json.dumps(contents)
+    tips = {
+        'chatType': 'group',
+        'msgType': tips_msg,
+        'contents': '%s' % contents2Str,
+        'receiver': chat_group['chatGroupId'],
+        'sender': operator['userId']
     }
     headers = {'Content-Type': 'application/json'}
-    # requests.post(url, data=json.dumps(cmd), headers=headers)
     requests.post(url, data=json.dumps(tips), headers=headers)
