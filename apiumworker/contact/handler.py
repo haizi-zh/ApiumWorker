@@ -41,7 +41,6 @@ def login_handler(**kwargs):
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')  # hedylogos发消息接口
     welcome = u'欢迎回来'
     headers = {'Content-Type': 'application/json'}
-
     message = {
         'chatType': 'single',
         'contents': welcome,
@@ -49,7 +48,6 @@ def login_handler(**kwargs):
         'receiver': user['userId'],
         'sender': systemId
     }
-
     requests.post(url, data=json.dumps(message), headers=headers)
 
 
@@ -83,12 +81,12 @@ def send_contact_request_handler(**kwargs):
 
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
     content = {"action": "F_ADD",
-            "userId": sender['userId'],
-            "nickName": sender['nickName'],
-            "avatar": sender['avatar'],
-            "requestId": request_id,
-            "message": message
-        }
+               "userId": sender['userId'],
+               "nickName": sender['nickName'],
+               "avatar": sender['avatar'],
+               "requestId": request_id,
+               "message": message
+               }
     content2Str = json.dumps(content)
     logger.info('**********%s***************' % content2Str)
     cmd = {
@@ -112,12 +110,12 @@ def accept_contact_request_handler(**kwargs):
     logger.info('requestId = %s,sender = %d,receiver = %d' % (request_id, sender['userId'], receiver['userId']))
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
     contents = {
-            "action": "F_AGREE",
-            "userId": receiver['userId'],
-            "nickName": receiver['nickName'],
-            "avatar": receiver['avatar'],
-            "requestId": request_id
-        }
+        "action": "F_AGREE",
+        "userId": receiver['userId'],
+        "nickName": receiver['nickName'],
+        "avatar": receiver['avatar'],
+        "requestId": request_id
+    }
     contents2Str = json.dumps(contents)
     cmd = {
         'chatType': 'single',
@@ -281,58 +279,38 @@ def update_chatgroup_handler(**kwargs):
 # 添加讨论组成员事件
 @app.task(serializer='json', name='yunkai.onAddGroupMembers')
 def add_chatgroup_members_handler(**kwargs):
-    operator = kwargs['operator']
-    targets = kwargs['targets']
-    chat_group = kwargs['chatGroup']
-
-    logger.info(u'%s 在 %s 添加了成员' % (operator['nickName'], chat_group['name']))
-    url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
-    contents = {
-            'tipType': add_members_tips,
-            'operator': {
-                'userId': operator['userId'],
-                'nickName': operator['nickName']
-            },
-            'targets': targets,
-            'chatGroupId': chat_group['chatGroupId']
-        }
-    contents2Str = json.dumps(contents)
-    tips = {
-        'chatType': 'group',
-        'msgType': tips_msg,
-        'contents': '%s' % contents2Str,
-        'receiver': chat_group['chatGroupId'],
-        'sender': operator['userId']
-    }
-    headers = {'Content-Type': 'application/json'}
-    requests.post(url, data=json.dumps(tips), headers=headers)
+    modify_chatgroup_members_handler(True, **kwargs)
 
 
 # 删除讨论组成员事件
 @app.task(serializer='json', name='yunkai.onRemoveGroupMembers')
 def remove_chatgroup_members_handler(**kwargs):
+    modify_chatgroup_members_handler(False, **kwargs)
+
+
+def modify_chatgroup_members_handler(adding, **kwargs):
     operator = kwargs['operator']
     chat_group = kwargs['chatGroup']
     targets = kwargs['targets']
 
-    logger.info(u'%s 在 %s 添加了成员' % (operator['nickName'], chat_group['name']))
+    logger.info(u'%s 在 %s %s了成员' % (operator['nickName'], chat_group['name'], u'添加' if adding else u'删除'))
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
     contents = {
-            'tipType': remove_members_tips,
-            'operator': {
-                'userId': operator['userId'],
-                'nickName': operator['nickName']
-            },
-            'targets': targets,
-            'chatGroupId': chat_group['chatGroupId']
-        }
-    contents2Str = json.dumps(contents)
+        'tipType': add_members_tips if adding else remove_members_tips,
+        'operator': {
+            'userId': operator['userId'],
+            'nickName': operator['nickName']
+        },
+        'targets': targets,
+        'chatGroupId': chat_group['chatGroupId']
+    }
     tips = {
         'chatType': 'group',
         'msgType': tips_msg,
-        'contents': '%s' % contents2Str,
+        'contents': '%s' % json.dumps(contents),
         'receiver': chat_group['chatGroupId'],
         'sender': operator['userId']
     }
     headers = {'Content-Type': 'application/json'}
-    requests.post(url, data=json.dumps(tips), headers=headers)
+    ret = requests.post(url, data=json.dumps(tips), headers=headers)
+    print ret
