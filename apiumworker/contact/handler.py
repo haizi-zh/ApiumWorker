@@ -86,7 +86,7 @@ def send_contact_request_handler(**kwargs):
                "avatar": sender['avatar'],
                "requestId": request_id,
                "message": message
-               }
+    }
     content2Str = json.dumps(content)
     logger.info('**********%s***************' % content2Str)
     cmd = {
@@ -218,7 +218,7 @@ def create_user_handler(**kwargs):
     #
     # url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
     # create_user_message_1 = "您好，我是热爱旅行,行迹八方的派派。\r\n在这儿，没有规则，没有底限，随心所欲，畅所欲言。" \
-    #                         "欢迎7×24小时的调戏。\r\n世界这么大，约吗？"
+    # "欢迎7×24小时的调戏。\r\n世界这么大，约吗？"
     # # create_user_message_2 = "您好"
     #
     # # 添加服务号为好友

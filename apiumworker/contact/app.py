@@ -31,7 +31,8 @@ def __init_app():
     # conf = get_config(['smscenter', 'rabbitmq'], ['smscenter', (apiumworker_name, 'apiumworker')], cache_key='sms')
     # conf_rabbitmq = conf['apiumworker']['rabbitmq']
     # service_rabbitmq = conf['services']['rabbitmq']
-    conf = get_config(['yunkai', 'rabbitmq', ('hedy-dev', 'hedy')], [(apiumworker_name, 'apiumworker')], cache_key='contact')
+    conf = get_config(['yunkai', 'rabbitmq', ('hedy-dev', 'hedy')], [(apiumworker_name, 'apiumworker')],
+                      cache_key='contact')
     # conf_name = conf['contact']['name']#contact
     # conf_port = conf['contact-dev']['port']#9000
 
@@ -45,6 +46,7 @@ def __init_app():
     service_rabbitmq = conf['services']['rabbitmq'].values()[0]
 
     from apiumworker.contact import celery_config
+
     the_app = Celery('ApiumWorker', broker='amqp://%s:%s@%s:%d/%s' %
                                            (conf_rabbitmq['username'], conf_rabbitmq['password'],
                                             service_rabbitmq['host'], service_rabbitmq['port'],
@@ -62,6 +64,7 @@ def __init_app():
     except Thrift.TException, tx:
         print '%s' % (tx.message)
         raise
+
 
 client, app = __init_app()
 

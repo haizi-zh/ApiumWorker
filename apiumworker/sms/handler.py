@@ -4,10 +4,9 @@ import json
 __author__ = 'zephyre'
 
 from celery.utils.log import get_task_logger
-#from apiumworker.sms.app import app
-from apiumworker.contact.app import app#, client
+# from apiumworker.sms.app import app
+from apiumworker.contact.app import app  #, client
 from apiumworker.contact.app import client
-from apiumworker.contact.users import userservice
 import requests
 
 logger = get_task_logger('apium')
@@ -153,6 +152,7 @@ def reset_password_handler(user, miscInfo):
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
 
+
 # 用户注册事件
 @app.task(serializer='json', name='contact.onCreateUser')
 def create_user_handler(user, miscInfo):
@@ -166,7 +166,6 @@ def create_user_handler(user, miscInfo):
     requests.post(url, data=json.dumps(createUserMessage1), headers=headers)
     requests.post(url, data=json.dumps(createUserMessage2), headers=headers)
     # 将服务号添加为好友
-
 
 
 # 创建群组事件
@@ -244,9 +243,9 @@ def add_chatgroup_members_handler(chatGroup, operator, targets,
                 'nickName': operator['nickName']
             },
             'targets': [{
-                'userId': targets['userId'],
-                'nickName': targets['nickName']
-            }],
+                            'userId': targets['userId'],
+                            'nickName': targets['nickName']
+                        }],
             'chatGroupId': chatGroup['chatGroupId']
         }
     }
@@ -293,9 +292,9 @@ def remove_chatgroup_members_handler(chatGroup, operator, targets, miscInfo):
                 'nickName': operator['nickName']
             },
             'targets': [{
-                'userId': targets['userId'],
-                'nickName': targets['nickName']
-            }],
+                            'userId': targets['userId'],
+                            'nickName': targets['nickName']
+                        }],
             'chatGroupId': chatGroup['chatGroupId']
         }
     }

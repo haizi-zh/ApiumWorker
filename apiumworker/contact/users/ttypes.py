@@ -3,1373 +3,1636 @@
 #
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 #
-#  options string: py:new_style,newstrings
+#  options string: py:new_style,utf8strings
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
 
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol, TProtocol
-
 try:
-    from thrift.protocol import fastbinary
+  from thrift.protocol import fastbinary
 except:
-    fastbinary = None
+  fastbinary = None
 
 
 class Gender(object):
-    MALE = 0
-    FEMALE = 1
-    SECRET = 2
+  MALE = 0
+  FEMALE = 1
+  SECRET = 2
 
-    _VALUES_TO_NAMES = {
-        0: "MALE",
-        1: "FEMALE",
-        2: "SECRET",
-    }
+  _VALUES_TO_NAMES = {
+    0: "MALE",
+    1: "FEMALE",
+    2: "SECRET",
+  }
 
-    _NAMES_TO_VALUES = {
-        "MALE": 0,
-        "FEMALE": 1,
-        "SECRET": 2,
-    }
-
+  _NAMES_TO_VALUES = {
+    "MALE": 0,
+    "FEMALE": 1,
+    "SECRET": 2,
+  }
 
 class GroupType(object):
-    CHATGROUP = 0
-    FORUM = 1
+  CHATGROUP = 0
+  FORUM = 1
 
-    _VALUES_TO_NAMES = {
-        0: "CHATGROUP",
-        1: "FORUM",
-    }
+  _VALUES_TO_NAMES = {
+    0: "CHATGROUP",
+    1: "FORUM",
+  }
 
-    _NAMES_TO_VALUES = {
-        "CHATGROUP": 0,
-        "FORUM": 1,
-    }
+  _NAMES_TO_VALUES = {
+    "CHATGROUP": 0,
+    "FORUM": 1,
+  }
 
+class Role(object):
+  ADMIN = 10
+  VIP_USER = 5
+  SELLER = 20
+
+  _VALUES_TO_NAMES = {
+    10: "ADMIN",
+    5: "VIP_USER",
+    20: "SELLER",
+  }
+
+  _NAMES_TO_VALUES = {
+    "ADMIN": 10,
+    "VIP_USER": 5,
+    "SELLER": 20,
+  }
 
 class OperationCode(object):
-    SIGNUP = 1
-    RESET_PASSWORD = 2
-    UPDATE_TEL = 3
+  SIGNUP = 1
+  RESET_PASSWORD = 2
+  UPDATE_TEL = 3
 
-    _VALUES_TO_NAMES = {
-        1: "SIGNUP",
-        2: "RESET_PASSWORD",
-        3: "UPDATE_TEL",
-    }
+  _VALUES_TO_NAMES = {
+    1: "SIGNUP",
+    2: "RESET_PASSWORD",
+    3: "UPDATE_TEL",
+  }
 
-    _NAMES_TO_VALUES = {
-        "SIGNUP": 1,
-        "RESET_PASSWORD": 2,
-        "UPDATE_TEL": 3,
-    }
-
+  _NAMES_TO_VALUES = {
+    "SIGNUP": 1,
+    "RESET_PASSWORD": 2,
+    "UPDATE_TEL": 3,
+  }
 
 class UserInfoProp(object):
-    ID = 0
-    USER_ID = 1
-    NICK_NAME = 2
-    AVATAR = 3
-    GENDER = 4
-    SIGNATURE = 5
-    TEL = 6
-    CHAT_GROUPS = 7
+  ID = 0
+  USER_ID = 1
+  NICK_NAME = 2
+  AVATAR = 3
+  GENDER = 4
+  SIGNATURE = 5
+  TEL = 6
+  LOGIN_STATUS = 7
+  LOGIN_TIME = 8
+  LOGOUT_TIME = 9
+  LOGIN_SOURCE = 10
+  MEMO = 11
+  ROLES = 12
 
-    _VALUES_TO_NAMES = {
-        0: "ID",
-        1: "USER_ID",
-        2: "NICK_NAME",
-        3: "AVATAR",
-        4: "GENDER",
-        5: "SIGNATURE",
-        6: "TEL",
-        7: "CHAT_GROUPS",
-    }
+  _VALUES_TO_NAMES = {
+    0: "ID",
+    1: "USER_ID",
+    2: "NICK_NAME",
+    3: "AVATAR",
+    4: "GENDER",
+    5: "SIGNATURE",
+    6: "TEL",
+    7: "LOGIN_STATUS",
+    8: "LOGIN_TIME",
+    9: "LOGOUT_TIME",
+    10: "LOGIN_SOURCE",
+    11: "MEMO",
+    12: "ROLES",
+  }
 
-    _NAMES_TO_VALUES = {
-        "ID": 0,
-        "USER_ID": 1,
-        "NICK_NAME": 2,
-        "AVATAR": 3,
-        "GENDER": 4,
-        "SIGNATURE": 5,
-        "TEL": 6,
-        "CHAT_GROUPS": 7,
-    }
-
+  _NAMES_TO_VALUES = {
+    "ID": 0,
+    "USER_ID": 1,
+    "NICK_NAME": 2,
+    "AVATAR": 3,
+    "GENDER": 4,
+    "SIGNATURE": 5,
+    "TEL": 6,
+    "LOGIN_STATUS": 7,
+    "LOGIN_TIME": 8,
+    "LOGOUT_TIME": 9,
+    "LOGIN_SOURCE": 10,
+    "MEMO": 11,
+    "ROLES": 12,
+  }
 
 class ChatGroupProp(object):
-    ID = 0
-    CHAT_GROUP_ID = 1
-    NAME = 2
-    GROUP_DESC = 3
-    AVATAR = 4
-    TAGS = 5
-    CREATOR = 6
-    ADMIN = 7
-    PARTICIPANTS = 8
-    MAX_USERS = 9
-    VISIBLE = 10
+  ID = 0
+  CHAT_GROUP_ID = 1
+  NAME = 2
+  GROUP_DESC = 3
+  AVATAR = 4
+  TAGS = 5
+  CREATOR = 6
+  ADMIN = 7
+  PARTICIPANTS = 8
+  MAX_USERS = 9
+  VISIBLE = 10
 
-    _VALUES_TO_NAMES = {
-        0: "ID",
-        1: "CHAT_GROUP_ID",
-        2: "NAME",
-        3: "GROUP_DESC",
-        4: "AVATAR",
-        5: "TAGS",
-        6: "CREATOR",
-        7: "ADMIN",
-        8: "PARTICIPANTS",
-        9: "MAX_USERS",
-        10: "VISIBLE",
-    }
+  _VALUES_TO_NAMES = {
+    0: "ID",
+    1: "CHAT_GROUP_ID",
+    2: "NAME",
+    3: "GROUP_DESC",
+    4: "AVATAR",
+    5: "TAGS",
+    6: "CREATOR",
+    7: "ADMIN",
+    8: "PARTICIPANTS",
+    9: "MAX_USERS",
+    10: "VISIBLE",
+  }
 
-    _NAMES_TO_VALUES = {
-        "ID": 0,
-        "CHAT_GROUP_ID": 1,
-        "NAME": 2,
-        "GROUP_DESC": 3,
-        "AVATAR": 4,
-        "TAGS": 5,
-        "CREATOR": 6,
-        "ADMIN": 7,
-        "PARTICIPANTS": 8,
-        "MAX_USERS": 9,
-        "VISIBLE": 10,
-    }
+  _NAMES_TO_VALUES = {
+    "ID": 0,
+    "CHAT_GROUP_ID": 1,
+    "NAME": 2,
+    "GROUP_DESC": 3,
+    "AVATAR": 4,
+    "TAGS": 5,
+    "CREATOR": 6,
+    "ADMIN": 7,
+    "PARTICIPANTS": 8,
+    "MAX_USERS": 9,
+    "VISIBLE": 10,
+  }
 
 
 class ContactRequest(object):
-    """
-    Attributes:
-     - id
-     - sender
-     - receiver
-     - status
-     - requestMessage
-     - rejectMessage
-     - timestamp
-     - expire
-    """
+  """
+  Attributes:
+   - id
+   - sender
+   - receiver
+   - status
+   - requestMessage
+   - rejectMessage
+   - timestamp
+   - expire
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'id', None, None,),  # 1
-        (2, TType.I64, 'sender', None, None,),  # 2
-        (3, TType.I64, 'receiver', None, None,),  # 3
-        (4, TType.I32, 'status', None, None,),  # 4
-        (5, TType.STRING, 'requestMessage', None, None,),  # 5
-        (6, TType.STRING, 'rejectMessage', None, None,),  # 6
-        (7, TType.I64, 'timestamp', None, None,),  # 7
-        (8, TType.I64, 'expire', None, None,),  # 8
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'id', None, None, ), # 1
+    (2, TType.I64, 'sender', None, None, ), # 2
+    (3, TType.I64, 'receiver', None, None, ), # 3
+    (4, TType.I32, 'status', None, None, ), # 4
+    (5, TType.STRING, 'requestMessage', None, None, ), # 5
+    (6, TType.STRING, 'rejectMessage', None, None, ), # 6
+    (7, TType.I64, 'timestamp', None, None, ), # 7
+    (8, TType.I64, 'expire', None, None, ), # 8
+  )
 
-    def __init__(self, id=None, sender=None, receiver=None, status=None, requestMessage=None, rejectMessage=None,
-                 timestamp=None, expire=None, ):
-        self.id = id
-        self.sender = sender
-        self.receiver = receiver
-        self.status = status
-        self.requestMessage = requestMessage
-        self.rejectMessage = rejectMessage
-        self.timestamp = timestamp
-        self.expire = expire
+  def __init__(self, id=None, sender=None, receiver=None, status=None, requestMessage=None, rejectMessage=None, timestamp=None, expire=None,):
+    self.id = id
+    self.sender = sender
+    self.receiver = receiver
+    self.status = status
+    self.requestMessage = requestMessage
+    self.rejectMessage = rejectMessage
+    self.timestamp = timestamp
+    self.expire = expire
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.id = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.I64:
-                    self.sender = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 3:
-                if ftype == TType.I64:
-                    self.receiver = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 4:
-                if ftype == TType.I32:
-                    self.status = iprot.readI32();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 5:
-                if ftype == TType.STRING:
-                    self.requestMessage = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 6:
-                if ftype == TType.STRING:
-                    self.rejectMessage = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 7:
-                if ftype == TType.I64:
-                    self.timestamp = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 8:
-                if ftype == TType.I64:
-                    self.expire = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.id = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I64:
+          self.sender = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I64:
+          self.receiver = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.I32:
+          self.status = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRING:
+          self.requestMessage = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.STRING:
+          self.rejectMessage = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
+        if ftype == TType.I64:
+          self.timestamp = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.I64:
+          self.expire = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('ContactRequest')
-        if self.id is not None:
-            oprot.writeFieldBegin('id', TType.STRING, 1)
-            oprot.writeString(self.id)
-            oprot.writeFieldEnd()
-        if self.sender is not None:
-            oprot.writeFieldBegin('sender', TType.I64, 2)
-            oprot.writeI64(self.sender)
-            oprot.writeFieldEnd()
-        if self.receiver is not None:
-            oprot.writeFieldBegin('receiver', TType.I64, 3)
-            oprot.writeI64(self.receiver)
-            oprot.writeFieldEnd()
-        if self.status is not None:
-            oprot.writeFieldBegin('status', TType.I32, 4)
-            oprot.writeI32(self.status)
-            oprot.writeFieldEnd()
-        if self.requestMessage is not None:
-            oprot.writeFieldBegin('requestMessage', TType.STRING, 5)
-            oprot.writeString(self.requestMessage)
-            oprot.writeFieldEnd()
-        if self.rejectMessage is not None:
-            oprot.writeFieldBegin('rejectMessage', TType.STRING, 6)
-            oprot.writeString(self.rejectMessage)
-            oprot.writeFieldEnd()
-        if self.timestamp is not None:
-            oprot.writeFieldBegin('timestamp', TType.I64, 7)
-            oprot.writeI64(self.timestamp)
-            oprot.writeFieldEnd()
-        if self.expire is not None:
-            oprot.writeFieldBegin('expire', TType.I64, 8)
-            oprot.writeI64(self.expire)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ContactRequest')
+    if self.id is not None:
+      oprot.writeFieldBegin('id', TType.STRING, 1)
+      oprot.writeString(self.id.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.sender is not None:
+      oprot.writeFieldBegin('sender', TType.I64, 2)
+      oprot.writeI64(self.sender)
+      oprot.writeFieldEnd()
+    if self.receiver is not None:
+      oprot.writeFieldBegin('receiver', TType.I64, 3)
+      oprot.writeI64(self.receiver)
+      oprot.writeFieldEnd()
+    if self.status is not None:
+      oprot.writeFieldBegin('status', TType.I32, 4)
+      oprot.writeI32(self.status)
+      oprot.writeFieldEnd()
+    if self.requestMessage is not None:
+      oprot.writeFieldBegin('requestMessage', TType.STRING, 5)
+      oprot.writeString(self.requestMessage.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.rejectMessage is not None:
+      oprot.writeFieldBegin('rejectMessage', TType.STRING, 6)
+      oprot.writeString(self.rejectMessage.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.timestamp is not None:
+      oprot.writeFieldBegin('timestamp', TType.I64, 7)
+      oprot.writeI64(self.timestamp)
+      oprot.writeFieldEnd()
+    if self.expire is not None:
+      oprot.writeFieldBegin('expire', TType.I64, 8)
+      oprot.writeI64(self.expire)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.id)
-        value = (value * 31) ^ hash(self.sender)
-        value = (value * 31) ^ hash(self.receiver)
-        value = (value * 31) ^ hash(self.status)
-        value = (value * 31) ^ hash(self.requestMessage)
-        value = (value * 31) ^ hash(self.rejectMessage)
-        value = (value * 31) ^ hash(self.timestamp)
-        value = (value * 31) ^ hash(self.expire)
-        return value
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.id)
+    value = (value * 31) ^ hash(self.sender)
+    value = (value * 31) ^ hash(self.receiver)
+    value = (value * 31) ^ hash(self.status)
+    value = (value * 31) ^ hash(self.requestMessage)
+    value = (value * 31) ^ hash(self.rejectMessage)
+    value = (value * 31) ^ hash(self.timestamp)
+    value = (value * 31) ^ hash(self.expire)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class UserInfo(object):
-    """
-    Attributes:
-     - id
-     - userId
-     - nickName
-     - avatar
-     - gender
-     - signature
-     - tel
-    """
+  """
+  Attributes:
+   - id
+   - userId
+   - nickName
+   - avatar
+   - gender
+   - signature
+   - tel
+   - loginStatus
+   - loginTime
+   - logoutTime
+   - loginSource
+   - memo
+   - roles
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'id', None, None,),  # 1
-        (2, TType.I64, 'userId', None, None,),  # 2
-        (3, TType.STRING, 'nickName', None, None,),  # 3
-        (4, TType.STRING, 'avatar', None, None,),  # 4
-        (5, TType.I32, 'gender', None, None,),  # 5
-        (6, TType.STRING, 'signature', None, None,),  # 6
-        (7, TType.STRING, 'tel', None, None,),  # 7
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'id', None, None, ), # 1
+    (2, TType.I64, 'userId', None, None, ), # 2
+    (3, TType.STRING, 'nickName', None, None, ), # 3
+    (4, TType.STRING, 'avatar', None, None, ), # 4
+    (5, TType.I32, 'gender', None, None, ), # 5
+    (6, TType.STRING, 'signature', None, None, ), # 6
+    (7, TType.STRING, 'tel', None, None, ), # 7
+    (8, TType.BOOL, 'loginStatus', None, None, ), # 8
+    (9, TType.I64, 'loginTime', None, None, ), # 9
+    (10, TType.I64, 'logoutTime', None, None, ), # 10
+    (11, TType.LIST, 'loginSource', (TType.STRING,None), None, ), # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRING, 'memo', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    None, # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    None, # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    None, # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    None, # 60
+    None, # 61
+    None, # 62
+    None, # 63
+    None, # 64
+    None, # 65
+    None, # 66
+    None, # 67
+    None, # 68
+    None, # 69
+    None, # 70
+    None, # 71
+    None, # 72
+    None, # 73
+    None, # 74
+    None, # 75
+    None, # 76
+    None, # 77
+    None, # 78
+    None, # 79
+    None, # 80
+    None, # 81
+    None, # 82
+    None, # 83
+    None, # 84
+    None, # 85
+    None, # 86
+    None, # 87
+    None, # 88
+    None, # 89
+    None, # 90
+    None, # 91
+    None, # 92
+    None, # 93
+    None, # 94
+    None, # 95
+    None, # 96
+    None, # 97
+    None, # 98
+    None, # 99
+    (100, TType.LIST, 'roles', (TType.I32,None), None, ), # 100
+  )
 
-    def __init__(self, id=None, userId=None, nickName=None, avatar=None, gender=None, signature=None, tel=None, ):
-        self.id = id
-        self.userId = userId
-        self.nickName = nickName
-        self.avatar = avatar
-        self.gender = gender
-        self.signature = signature
-        self.tel = tel
+  def __init__(self, id=None, userId=None, nickName=None, avatar=None, gender=None, signature=None, tel=None, loginStatus=None, loginTime=None, logoutTime=None, loginSource=None, memo=None, roles=None,):
+    self.id = id
+    self.userId = userId
+    self.nickName = nickName
+    self.avatar = avatar
+    self.gender = gender
+    self.signature = signature
+    self.tel = tel
+    self.loginStatus = loginStatus
+    self.loginTime = loginTime
+    self.logoutTime = logoutTime
+    self.loginSource = loginSource
+    self.memo = memo
+    self.roles = roles
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.id = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.I64:
-                    self.userId = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 3:
-                if ftype == TType.STRING:
-                    self.nickName = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 4:
-                if ftype == TType.STRING:
-                    self.avatar = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 5:
-                if ftype == TType.I32:
-                    self.gender = iprot.readI32();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 6:
-                if ftype == TType.STRING:
-                    self.signature = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 7:
-                if ftype == TType.STRING:
-                    self.tel = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.id = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I64:
+          self.userId = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRING:
+          self.nickName = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.avatar = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.I32:
+          self.gender = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.STRING:
+          self.signature = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
+        if ftype == TType.STRING:
+          self.tel = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.BOOL:
+          self.loginStatus = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 9:
+        if ftype == TType.I64:
+          self.loginTime = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 10:
+        if ftype == TType.I64:
+          self.logoutTime = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 11:
+        if ftype == TType.LIST:
+          self.loginSource = []
+          (_etype3, _size0) = iprot.readListBegin()
+          for _i4 in xrange(_size0):
+            _elem5 = iprot.readString().decode('utf-8')
+            self.loginSource.append(_elem5)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.STRING:
+          self.memo = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 100:
+        if ftype == TType.LIST:
+          self.roles = []
+          (_etype9, _size6) = iprot.readListBegin()
+          for _i10 in xrange(_size6):
+            _elem11 = iprot.readI32();
+            self.roles.append(_elem11)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('UserInfo')
-        if self.id is not None:
-            oprot.writeFieldBegin('id', TType.STRING, 1)
-            oprot.writeString(self.id)
-            oprot.writeFieldEnd()
-        if self.userId is not None:
-            oprot.writeFieldBegin('userId', TType.I64, 2)
-            oprot.writeI64(self.userId)
-            oprot.writeFieldEnd()
-        if self.nickName is not None:
-            oprot.writeFieldBegin('nickName', TType.STRING, 3)
-            oprot.writeString(self.nickName)
-            oprot.writeFieldEnd()
-        if self.avatar is not None:
-            oprot.writeFieldBegin('avatar', TType.STRING, 4)
-            oprot.writeString(self.avatar)
-            oprot.writeFieldEnd()
-        if self.gender is not None:
-            oprot.writeFieldBegin('gender', TType.I32, 5)
-            oprot.writeI32(self.gender)
-            oprot.writeFieldEnd()
-        if self.signature is not None:
-            oprot.writeFieldBegin('signature', TType.STRING, 6)
-            oprot.writeString(self.signature)
-            oprot.writeFieldEnd()
-        if self.tel is not None:
-            oprot.writeFieldBegin('tel', TType.STRING, 7)
-            oprot.writeString(self.tel)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('UserInfo')
+    if self.id is not None:
+      oprot.writeFieldBegin('id', TType.STRING, 1)
+      oprot.writeString(self.id.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.userId is not None:
+      oprot.writeFieldBegin('userId', TType.I64, 2)
+      oprot.writeI64(self.userId)
+      oprot.writeFieldEnd()
+    if self.nickName is not None:
+      oprot.writeFieldBegin('nickName', TType.STRING, 3)
+      oprot.writeString(self.nickName.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.avatar is not None:
+      oprot.writeFieldBegin('avatar', TType.STRING, 4)
+      oprot.writeString(self.avatar.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.gender is not None:
+      oprot.writeFieldBegin('gender', TType.I32, 5)
+      oprot.writeI32(self.gender)
+      oprot.writeFieldEnd()
+    if self.signature is not None:
+      oprot.writeFieldBegin('signature', TType.STRING, 6)
+      oprot.writeString(self.signature.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.tel is not None:
+      oprot.writeFieldBegin('tel', TType.STRING, 7)
+      oprot.writeString(self.tel.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.loginStatus is not None:
+      oprot.writeFieldBegin('loginStatus', TType.BOOL, 8)
+      oprot.writeBool(self.loginStatus)
+      oprot.writeFieldEnd()
+    if self.loginTime is not None:
+      oprot.writeFieldBegin('loginTime', TType.I64, 9)
+      oprot.writeI64(self.loginTime)
+      oprot.writeFieldEnd()
+    if self.logoutTime is not None:
+      oprot.writeFieldBegin('logoutTime', TType.I64, 10)
+      oprot.writeI64(self.logoutTime)
+      oprot.writeFieldEnd()
+    if self.loginSource is not None:
+      oprot.writeFieldBegin('loginSource', TType.LIST, 11)
+      oprot.writeListBegin(TType.STRING, len(self.loginSource))
+      for iter12 in self.loginSource:
+        oprot.writeString(iter12.encode('utf-8'))
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.memo is not None:
+      oprot.writeFieldBegin('memo', TType.STRING, 20)
+      oprot.writeString(self.memo.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.roles is not None:
+      oprot.writeFieldBegin('roles', TType.LIST, 100)
+      oprot.writeListBegin(TType.I32, len(self.roles))
+      for iter13 in self.roles:
+        oprot.writeI32(iter13)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.id)
-        value = (value * 31) ^ hash(self.userId)
-        value = (value * 31) ^ hash(self.nickName)
-        value = (value * 31) ^ hash(self.avatar)
-        value = (value * 31) ^ hash(self.gender)
-        value = (value * 31) ^ hash(self.signature)
-        value = (value * 31) ^ hash(self.tel)
-        return value
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.id)
+    value = (value * 31) ^ hash(self.userId)
+    value = (value * 31) ^ hash(self.nickName)
+    value = (value * 31) ^ hash(self.avatar)
+    value = (value * 31) ^ hash(self.gender)
+    value = (value * 31) ^ hash(self.signature)
+    value = (value * 31) ^ hash(self.tel)
+    value = (value * 31) ^ hash(self.loginStatus)
+    value = (value * 31) ^ hash(self.loginTime)
+    value = (value * 31) ^ hash(self.logoutTime)
+    value = (value * 31) ^ hash(self.loginSource)
+    value = (value * 31) ^ hash(self.memo)
+    value = (value * 31) ^ hash(self.roles)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class ChatGroup(object):
-    """
-    Attributes:
-     - id
-     - chatGroupId
-     - name
-     - groupDesc
-     - avatar
-     - tags
-     - creator
-     - admin
-     - participants
-     - maxUsers
-     - createTime
-     - updateTime
-     - visible
-    """
+  """
+  Attributes:
+   - id
+   - chatGroupId
+   - name
+   - groupDesc
+   - avatar
+   - tags
+   - creator
+   - admin
+   - participants
+   - maxUsers
+   - createTime
+   - updateTime
+   - visible
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'id', None, None,),  # 1
-        (2, TType.I64, 'chatGroupId', None, None,),  # 2
-        (3, TType.STRING, 'name', None, None,),  # 3
-        (4, TType.STRING, 'groupDesc', None, None,),  # 4
-        (5, TType.STRING, 'avatar', None, None,),  # 5
-        (6, TType.LIST, 'tags', (TType.STRING, None), None,),  # 6
-        (7, TType.I64, 'creator', None, None,),  # 7
-        (8, TType.LIST, 'admin', (TType.I64, None), None,),  # 8
-        (9, TType.LIST, 'participants', (TType.I64, None), None,),  # 9
-        (10, TType.I32, 'maxUsers', None, None,),  # 10
-        (11, TType.I64, 'createTime', None, None,),  # 11
-        (12, TType.I64, 'updateTime', None, None,),  # 12
-        (13, TType.BOOL, 'visible', None, None,),  # 13
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'id', None, None, ), # 1
+    (2, TType.I64, 'chatGroupId', None, None, ), # 2
+    (3, TType.STRING, 'name', None, None, ), # 3
+    (4, TType.STRING, 'groupDesc', None, None, ), # 4
+    (5, TType.STRING, 'avatar', None, None, ), # 5
+    (6, TType.LIST, 'tags', (TType.STRING,None), None, ), # 6
+    (7, TType.I64, 'creator', None, None, ), # 7
+    (8, TType.LIST, 'admin', (TType.I64,None), None, ), # 8
+    (9, TType.LIST, 'participants', (TType.I64,None), None, ), # 9
+    (10, TType.I32, 'maxUsers', None, None, ), # 10
+    (11, TType.I64, 'createTime', None, None, ), # 11
+    (12, TType.I64, 'updateTime', None, None, ), # 12
+    (13, TType.BOOL, 'visible', None, None, ), # 13
+  )
 
-    def __init__(self, id=None, chatGroupId=None, name=None, groupDesc=None, avatar=None, tags=None, creator=None,
-                 admin=None, participants=None, maxUsers=None, createTime=None, updateTime=None, visible=None, ):
-        self.id = id
-        self.chatGroupId = chatGroupId
-        self.name = name
-        self.groupDesc = groupDesc
-        self.avatar = avatar
-        self.tags = tags
-        self.creator = creator
-        self.admin = admin
-        self.participants = participants
-        self.maxUsers = maxUsers
-        self.createTime = createTime
-        self.updateTime = updateTime
-        self.visible = visible
+  def __init__(self, id=None, chatGroupId=None, name=None, groupDesc=None, avatar=None, tags=None, creator=None, admin=None, participants=None, maxUsers=None, createTime=None, updateTime=None, visible=None,):
+    self.id = id
+    self.chatGroupId = chatGroupId
+    self.name = name
+    self.groupDesc = groupDesc
+    self.avatar = avatar
+    self.tags = tags
+    self.creator = creator
+    self.admin = admin
+    self.participants = participants
+    self.maxUsers = maxUsers
+    self.createTime = createTime
+    self.updateTime = updateTime
+    self.visible = visible
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.id = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.I64:
-                    self.chatGroupId = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 3:
-                if ftype == TType.STRING:
-                    self.name = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 4:
-                if ftype == TType.STRING:
-                    self.groupDesc = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 5:
-                if ftype == TType.STRING:
-                    self.avatar = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 6:
-                if ftype == TType.LIST:
-                    self.tags = []
-                    (_etype3, _size0) = iprot.readListBegin()
-                    for _i4 in xrange(_size0):
-                        _elem5 = iprot.readString();
-                        self.tags.append(_elem5)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 7:
-                if ftype == TType.I64:
-                    self.creator = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 8:
-                if ftype == TType.LIST:
-                    self.admin = []
-                    (_etype9, _size6) = iprot.readListBegin()
-                    for _i10 in xrange(_size6):
-                        _elem11 = iprot.readI64();
-                        self.admin.append(_elem11)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 9:
-                if ftype == TType.LIST:
-                    self.participants = []
-                    (_etype15, _size12) = iprot.readListBegin()
-                    for _i16 in xrange(_size12):
-                        _elem17 = iprot.readI64();
-                        self.participants.append(_elem17)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 10:
-                if ftype == TType.I32:
-                    self.maxUsers = iprot.readI32();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 11:
-                if ftype == TType.I64:
-                    self.createTime = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 12:
-                if ftype == TType.I64:
-                    self.updateTime = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 13:
-                if ftype == TType.BOOL:
-                    self.visible = iprot.readBool();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.id = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I64:
+          self.chatGroupId = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRING:
+          self.name = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.groupDesc = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRING:
+          self.avatar = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.LIST:
+          self.tags = []
+          (_etype17, _size14) = iprot.readListBegin()
+          for _i18 in xrange(_size14):
+            _elem19 = iprot.readString().decode('utf-8')
+            self.tags.append(_elem19)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
+        if ftype == TType.I64:
+          self.creator = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.LIST:
+          self.admin = []
+          (_etype23, _size20) = iprot.readListBegin()
+          for _i24 in xrange(_size20):
+            _elem25 = iprot.readI64();
+            self.admin.append(_elem25)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 9:
+        if ftype == TType.LIST:
+          self.participants = []
+          (_etype29, _size26) = iprot.readListBegin()
+          for _i30 in xrange(_size26):
+            _elem31 = iprot.readI64();
+            self.participants.append(_elem31)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 10:
+        if ftype == TType.I32:
+          self.maxUsers = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 11:
+        if ftype == TType.I64:
+          self.createTime = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 12:
+        if ftype == TType.I64:
+          self.updateTime = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 13:
+        if ftype == TType.BOOL:
+          self.visible = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('ChatGroup')
-        if self.id is not None:
-            oprot.writeFieldBegin('id', TType.STRING, 1)
-            oprot.writeString(self.id)
-            oprot.writeFieldEnd()
-        if self.chatGroupId is not None:
-            oprot.writeFieldBegin('chatGroupId', TType.I64, 2)
-            oprot.writeI64(self.chatGroupId)
-            oprot.writeFieldEnd()
-        if self.name is not None:
-            oprot.writeFieldBegin('name', TType.STRING, 3)
-            oprot.writeString(self.name)
-            oprot.writeFieldEnd()
-        if self.groupDesc is not None:
-            oprot.writeFieldBegin('groupDesc', TType.STRING, 4)
-            oprot.writeString(self.groupDesc)
-            oprot.writeFieldEnd()
-        if self.avatar is not None:
-            oprot.writeFieldBegin('avatar', TType.STRING, 5)
-            oprot.writeString(self.avatar)
-            oprot.writeFieldEnd()
-        if self.tags is not None:
-            oprot.writeFieldBegin('tags', TType.LIST, 6)
-            oprot.writeListBegin(TType.STRING, len(self.tags))
-            for iter18 in self.tags:
-                oprot.writeString(iter18)
-            oprot.writeListEnd()
-            oprot.writeFieldEnd()
-        if self.creator is not None:
-            oprot.writeFieldBegin('creator', TType.I64, 7)
-            oprot.writeI64(self.creator)
-            oprot.writeFieldEnd()
-        if self.admin is not None:
-            oprot.writeFieldBegin('admin', TType.LIST, 8)
-            oprot.writeListBegin(TType.I64, len(self.admin))
-            for iter19 in self.admin:
-                oprot.writeI64(iter19)
-            oprot.writeListEnd()
-            oprot.writeFieldEnd()
-        if self.participants is not None:
-            oprot.writeFieldBegin('participants', TType.LIST, 9)
-            oprot.writeListBegin(TType.I64, len(self.participants))
-            for iter20 in self.participants:
-                oprot.writeI64(iter20)
-            oprot.writeListEnd()
-            oprot.writeFieldEnd()
-        if self.maxUsers is not None:
-            oprot.writeFieldBegin('maxUsers', TType.I32, 10)
-            oprot.writeI32(self.maxUsers)
-            oprot.writeFieldEnd()
-        if self.createTime is not None:
-            oprot.writeFieldBegin('createTime', TType.I64, 11)
-            oprot.writeI64(self.createTime)
-            oprot.writeFieldEnd()
-        if self.updateTime is not None:
-            oprot.writeFieldBegin('updateTime', TType.I64, 12)
-            oprot.writeI64(self.updateTime)
-            oprot.writeFieldEnd()
-        if self.visible is not None:
-            oprot.writeFieldBegin('visible', TType.BOOL, 13)
-            oprot.writeBool(self.visible)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ChatGroup')
+    if self.id is not None:
+      oprot.writeFieldBegin('id', TType.STRING, 1)
+      oprot.writeString(self.id.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.chatGroupId is not None:
+      oprot.writeFieldBegin('chatGroupId', TType.I64, 2)
+      oprot.writeI64(self.chatGroupId)
+      oprot.writeFieldEnd()
+    if self.name is not None:
+      oprot.writeFieldBegin('name', TType.STRING, 3)
+      oprot.writeString(self.name.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.groupDesc is not None:
+      oprot.writeFieldBegin('groupDesc', TType.STRING, 4)
+      oprot.writeString(self.groupDesc.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.avatar is not None:
+      oprot.writeFieldBegin('avatar', TType.STRING, 5)
+      oprot.writeString(self.avatar.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.tags is not None:
+      oprot.writeFieldBegin('tags', TType.LIST, 6)
+      oprot.writeListBegin(TType.STRING, len(self.tags))
+      for iter32 in self.tags:
+        oprot.writeString(iter32.encode('utf-8'))
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.creator is not None:
+      oprot.writeFieldBegin('creator', TType.I64, 7)
+      oprot.writeI64(self.creator)
+      oprot.writeFieldEnd()
+    if self.admin is not None:
+      oprot.writeFieldBegin('admin', TType.LIST, 8)
+      oprot.writeListBegin(TType.I64, len(self.admin))
+      for iter33 in self.admin:
+        oprot.writeI64(iter33)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.participants is not None:
+      oprot.writeFieldBegin('participants', TType.LIST, 9)
+      oprot.writeListBegin(TType.I64, len(self.participants))
+      for iter34 in self.participants:
+        oprot.writeI64(iter34)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.maxUsers is not None:
+      oprot.writeFieldBegin('maxUsers', TType.I32, 10)
+      oprot.writeI32(self.maxUsers)
+      oprot.writeFieldEnd()
+    if self.createTime is not None:
+      oprot.writeFieldBegin('createTime', TType.I64, 11)
+      oprot.writeI64(self.createTime)
+      oprot.writeFieldEnd()
+    if self.updateTime is not None:
+      oprot.writeFieldBegin('updateTime', TType.I64, 12)
+      oprot.writeI64(self.updateTime)
+      oprot.writeFieldEnd()
+    if self.visible is not None:
+      oprot.writeFieldBegin('visible', TType.BOOL, 13)
+      oprot.writeBool(self.visible)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.id)
-        value = (value * 31) ^ hash(self.chatGroupId)
-        value = (value * 31) ^ hash(self.name)
-        value = (value * 31) ^ hash(self.groupDesc)
-        value = (value * 31) ^ hash(self.avatar)
-        value = (value * 31) ^ hash(self.tags)
-        value = (value * 31) ^ hash(self.creator)
-        value = (value * 31) ^ hash(self.admin)
-        value = (value * 31) ^ hash(self.participants)
-        value = (value * 31) ^ hash(self.maxUsers)
-        value = (value * 31) ^ hash(self.createTime)
-        value = (value * 31) ^ hash(self.updateTime)
-        value = (value * 31) ^ hash(self.visible)
-        return value
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.id)
+    value = (value * 31) ^ hash(self.chatGroupId)
+    value = (value * 31) ^ hash(self.name)
+    value = (value * 31) ^ hash(self.groupDesc)
+    value = (value * 31) ^ hash(self.avatar)
+    value = (value * 31) ^ hash(self.tags)
+    value = (value * 31) ^ hash(self.creator)
+    value = (value * 31) ^ hash(self.admin)
+    value = (value * 31) ^ hash(self.participants)
+    value = (value * 31) ^ hash(self.maxUsers)
+    value = (value * 31) ^ hash(self.createTime)
+    value = (value * 31) ^ hash(self.updateTime)
+    value = (value * 31) ^ hash(self.visible)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class Token(object):
-    """
-    Attributes:
-     - fingerprint
-     - action
-     - userId
-     - countryCode
-     - tel
-     - createTime
-    """
+  """
+  Attributes:
+   - fingerprint
+   - action
+   - userId
+   - countryCode
+   - tel
+   - createTime
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'fingerprint', None, None,),  # 1
-        (2, TType.I32, 'action', None, None,),  # 2
-        (3, TType.I64, 'userId', None, None,),  # 3
-        (4, TType.I32, 'countryCode', None, None,),  # 4
-        (5, TType.STRING, 'tel', None, None,),  # 5
-        (6, TType.I64, 'createTime', None, None,),  # 6
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'fingerprint', None, None, ), # 1
+    (2, TType.I32, 'action', None, None, ), # 2
+    (3, TType.I64, 'userId', None, None, ), # 3
+    (4, TType.I32, 'countryCode', None, None, ), # 4
+    (5, TType.STRING, 'tel', None, None, ), # 5
+    (6, TType.I64, 'createTime', None, None, ), # 6
+  )
 
-    def __init__(self, fingerprint=None, action=None, userId=None, countryCode=None, tel=None, createTime=None, ):
-        self.fingerprint = fingerprint
-        self.action = action
-        self.userId = userId
-        self.countryCode = countryCode
-        self.tel = tel
-        self.createTime = createTime
+  def __init__(self, fingerprint=None, action=None, userId=None, countryCode=None, tel=None, createTime=None,):
+    self.fingerprint = fingerprint
+    self.action = action
+    self.userId = userId
+    self.countryCode = countryCode
+    self.tel = tel
+    self.createTime = createTime
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.fingerprint = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.I32:
-                    self.action = iprot.readI32();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 3:
-                if ftype == TType.I64:
-                    self.userId = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 4:
-                if ftype == TType.I32:
-                    self.countryCode = iprot.readI32();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 5:
-                if ftype == TType.STRING:
-                    self.tel = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            elif fid == 6:
-                if ftype == TType.I64:
-                    self.createTime = iprot.readI64();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.fingerprint = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.action = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I64:
+          self.userId = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.I32:
+          self.countryCode = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRING:
+          self.tel = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.I64:
+          self.createTime = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('Token')
-        if self.fingerprint is not None:
-            oprot.writeFieldBegin('fingerprint', TType.STRING, 1)
-            oprot.writeString(self.fingerprint)
-            oprot.writeFieldEnd()
-        if self.action is not None:
-            oprot.writeFieldBegin('action', TType.I32, 2)
-            oprot.writeI32(self.action)
-            oprot.writeFieldEnd()
-        if self.userId is not None:
-            oprot.writeFieldBegin('userId', TType.I64, 3)
-            oprot.writeI64(self.userId)
-            oprot.writeFieldEnd()
-        if self.countryCode is not None:
-            oprot.writeFieldBegin('countryCode', TType.I32, 4)
-            oprot.writeI32(self.countryCode)
-            oprot.writeFieldEnd()
-        if self.tel is not None:
-            oprot.writeFieldBegin('tel', TType.STRING, 5)
-            oprot.writeString(self.tel)
-            oprot.writeFieldEnd()
-        if self.createTime is not None:
-            oprot.writeFieldBegin('createTime', TType.I64, 6)
-            oprot.writeI64(self.createTime)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('Token')
+    if self.fingerprint is not None:
+      oprot.writeFieldBegin('fingerprint', TType.STRING, 1)
+      oprot.writeString(self.fingerprint.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.action is not None:
+      oprot.writeFieldBegin('action', TType.I32, 2)
+      oprot.writeI32(self.action)
+      oprot.writeFieldEnd()
+    if self.userId is not None:
+      oprot.writeFieldBegin('userId', TType.I64, 3)
+      oprot.writeI64(self.userId)
+      oprot.writeFieldEnd()
+    if self.countryCode is not None:
+      oprot.writeFieldBegin('countryCode', TType.I32, 4)
+      oprot.writeI32(self.countryCode)
+      oprot.writeFieldEnd()
+    if self.tel is not None:
+      oprot.writeFieldBegin('tel', TType.STRING, 5)
+      oprot.writeString(self.tel.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.createTime is not None:
+      oprot.writeFieldBegin('createTime', TType.I64, 6)
+      oprot.writeI64(self.createTime)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.fingerprint)
-        value = (value * 31) ^ hash(self.action)
-        value = (value * 31) ^ hash(self.userId)
-        value = (value * 31) ^ hash(self.countryCode)
-        value = (value * 31) ^ hash(self.tel)
-        value = (value * 31) ^ hash(self.createTime)
-        return value
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.fingerprint)
+    value = (value * 31) ^ hash(self.action)
+    value = (value * 31) ^ hash(self.userId)
+    value = (value * 31) ^ hash(self.countryCode)
+    value = (value * 31) ^ hash(self.tel)
+    value = (value * 31) ^ hash(self.createTime)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class NotFoundException(TException):
-    """
-    Attributes:
-     - message
-    """
+  """
+  Attributes:
+   - message
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'message', None, None,),  # 1
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
 
-    def __init__(self, message=None, ):
-        self.message = message
+  def __init__(self, message=None,):
+    self.message = message
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.message = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('NotFoundException')
-        if self.message is not None:
-            oprot.writeFieldBegin('message', TType.STRING, 1)
-            oprot.writeString(self.message)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('NotFoundException')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message.encode('utf-8'))
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __str__(self):
-        return repr(self)
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.message)
-        return value
+  def __str__(self):
+    return repr(self)
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.message)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class InvalidArgsException(TException):
-    """
-    Attributes:
-     - message
-    """
+  """
+  Attributes:
+   - message
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'message', None, None,),  # 1
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
 
-    def __init__(self, message=None, ):
-        self.message = message
+  def __init__(self, message=None,):
+    self.message = message
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.message = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('InvalidArgsException')
-        if self.message is not None:
-            oprot.writeFieldBegin('message', TType.STRING, 1)
-            oprot.writeString(self.message)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('InvalidArgsException')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message.encode('utf-8'))
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __str__(self):
-        return repr(self)
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.message)
-        return value
+  def __str__(self):
+    return repr(self)
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.message)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class AuthException(TException):
-    """
-    Attributes:
-     - message
-    """
+  """
+  Attributes:
+   - message
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'message', None, None,),  # 1
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
 
-    def __init__(self, message=None, ):
-        self.message = message
+  def __init__(self, message=None,):
+    self.message = message
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.message = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('AuthException')
-        if self.message is not None:
-            oprot.writeFieldBegin('message', TType.STRING, 1)
-            oprot.writeString(self.message)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('AuthException')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message.encode('utf-8'))
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __str__(self):
-        return repr(self)
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.message)
-        return value
+  def __str__(self):
+    return repr(self)
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.message)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class UserExistsException(TException):
-    """
-    Attributes:
-     - message
-    """
+  """
+  Attributes:
+   - message
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'message', None, None,),  # 1
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
 
-    def __init__(self, message=None, ):
-        self.message = message
+  def __init__(self, message=None,):
+    self.message = message
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.message = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('UserExistsException')
-        if self.message is not None:
-            oprot.writeFieldBegin('message', TType.STRING, 1)
-            oprot.writeString(self.message)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('UserExistsException')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message.encode('utf-8'))
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __str__(self):
-        return repr(self)
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.message)
-        return value
+  def __str__(self):
+    return repr(self)
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.message)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
+
+class ResourceConflictException(TException):
+  """
+  Attributes:
+   - message
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
+
+  def __init__(self, message=None,):
+    self.message = message
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ResourceConflictException')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message.encode('utf-8'))
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __str__(self):
+    return repr(self)
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.message)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
 
 class GroupMembersLimitException(TException):
-    """
-    Attributes:
-     - message
-    """
+  """
+  Attributes:
+   - message
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'message', None, None,),  # 1
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
 
-    def __init__(self, message=None, ):
-        self.message = message
+  def __init__(self, message=None,):
+    self.message = message
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.message = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('GroupMembersLimitException')
-        if self.message is not None:
-            oprot.writeFieldBegin('message', TType.STRING, 1)
-            oprot.writeString(self.message)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('GroupMembersLimitException')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message.encode('utf-8'))
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __str__(self):
-        return repr(self)
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.message)
-        return value
+  def __str__(self):
+    return repr(self)
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.message)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class InvalidStateException(TException):
-    """
-    Attributes:
-     - message
-    """
+  """
+  Attributes:
+   - message
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'message', None, None,),  # 1
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
 
-    def __init__(self, message=None, ):
-        self.message = message
+  def __init__(self, message=None,):
+    self.message = message
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.message = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('InvalidStateException')
-        if self.message is not None:
-            oprot.writeFieldBegin('message', TType.STRING, 1)
-            oprot.writeString(self.message)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('InvalidStateException')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message.encode('utf-8'))
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __str__(self):
-        return repr(self)
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.message)
-        return value
+  def __str__(self):
+    return repr(self)
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.message)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class ValidationCodeException(TException):
-    """
-    Attributes:
-     - message
-    """
+  """
+  Attributes:
+   - message
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'message', None, None,),  # 1
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
 
-    def __init__(self, message=None, ):
-        self.message = message
+  def __init__(self, message=None,):
+    self.message = message
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.message = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('ValidationCodeException')
-        if self.message is not None:
-            oprot.writeFieldBegin('message', TType.STRING, 1)
-            oprot.writeString(self.message)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ValidationCodeException')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message.encode('utf-8'))
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __str__(self):
-        return repr(self)
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.message)
-        return value
+  def __str__(self):
+    return repr(self)
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.message)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
+  def __ne__(self, other):
+    return not (self == other)
 
 class OverQuotaLimitException(TException):
-    """
-    Attributes:
-     - message
-    """
+  """
+  Attributes:
+   - message
+  """
 
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'message', None, None,),  # 1
-    )
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'message', None, None, ), # 1
+  )
 
-    def __init__(self, message=None, ):
-        self.message = message
+  def __init__(self, message=None,):
+    self.message = message
 
-    def read(self, iprot):
-        if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans,
-                                                                                        TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-            fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.message = iprot.readString();
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.message = iprot.readString().decode('utf-8')
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
 
-    def write(self, oprot):
-        if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-            oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('OverQuotaLimitException')
-        if self.message is not None:
-            oprot.writeFieldBegin('message', TType.STRING, 1)
-            oprot.writeString(self.message)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('OverQuotaLimitException')
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 1)
+      oprot.writeString(self.message.encode('utf-8'))
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
 
-    def validate(self):
-        return
+  def validate(self):
+    return
 
-    def __str__(self):
-        return repr(self)
 
-    def __hash__(self):
-        value = 17
-        value = (value * 31) ^ hash(self.message)
-        return value
+  def __str__(self):
+    return repr(self)
 
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.iteritems()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.message)
+    return value
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
 
-    def __ne__(self, other):
-        return not (self == other)
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
