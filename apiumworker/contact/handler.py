@@ -5,7 +5,7 @@ __author__ = 'zephyre'
 
 from celery.utils.log import get_task_logger
 from apiumworker.contact.app import app
-from apiumworker.etcd_conf import get_config, project_conf
+from apiumworker.etcd_conf import get_config
 
 import requests
 

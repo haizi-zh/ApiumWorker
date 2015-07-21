@@ -1,10 +1,14 @@
-from apiumworker.etcd_conf import project_conf, cmd_args
+# coding=utf-8
 
 __author__ = 'zephyre'
 
 
 def worker():
     import imp
+
+    from apiumworker.global_conf import parse_cl_args
+
+    project_conf, cmd_args = parse_cl_args()
 
     for m in project_conf['modules']:
         result = imp.find_module(m)

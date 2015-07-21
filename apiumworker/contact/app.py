@@ -9,7 +9,10 @@ def __init_app():
     from thrift.transport import TSocket
     from thrift.transport import TTransport
     from thrift.protocol import TBinaryProtocol
-    from apiumworker.etcd_conf import get_config, project_conf
+    from apiumworker.global_conf import parse_cl_args
+    from apiumworker.etcd_conf import get_config
+
+    project_conf, _ = parse_cl_args()
 
     runlevel = project_conf['runlevel']
     if runlevel == 'production':

@@ -88,27 +88,6 @@ def build_conf(node, alias=None):
         return None
 
 
-def parse_cl_args():
-    """
-    解析命令行参数
-    """
-    import argparse
-    import sys
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--module', '-m', nargs='*', choices=['sms', 'contact'])
-    parser.add_argument('--runlevel', choices=['production', 'dev', 'test'])
-    extracted_args, left_over = parser.parse_known_args()
-
-    args = sys.argv[:1]
-    args.extend(left_over)
-
-    return {'modules': extracted_args.module, 'runlevel': extracted_args.runlevel}, args
-
-
-project_conf, cmd_args = parse_cl_args()
-
-
 def get_config(service_names=None, conf_names=None, cache_key=None, force_refresh=False):
     if not force_refresh and cache_key and cache_key in _conf_map:
         return _conf_map[cache_key]
@@ -147,6 +126,10 @@ def get_config(service_names=None, conf_names=None, cache_key=None, force_refres
             continue
         else:
             conf_map.update(build_conf(data['node'], alias=alias))
+
+    from apiumworker.global_conf import parse_cl_args
+
+    project_conf, _ = parse_cl_args()
 
     config = merge_dicts({'services': services}, conf_map, project_conf)
 
