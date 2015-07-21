@@ -5,7 +5,7 @@ __author__ = 'zephyre'
 
 from celery.utils.log import get_task_logger
 # from apiumworker.sms.app import app
-from apiumworker.contact.app import app  #, client
+from apiumworker.contact.app import app  # , client
 from apiumworker.contact.app import client
 import requests
 
@@ -211,7 +211,7 @@ def add_chatgroup_members_handler(chatGroup, operator, targets,
     logger.info('%s 在 %s 添加了成员' % (operator['nickName'], chatGroup['nickName']))
     url = 'http://hedy.zephyre.me/chats'
     # if (operator['userId'] != targets['userId']):
-    #     cmd = {
+    # cmd = {
     #         'chatType': 'single',
     #         'msgType': 100,
     #         'contents': {
@@ -260,7 +260,7 @@ def remove_chatgroup_members_handler(chatGroup, operator, targets, miscInfo):
     logger.info('%s 在 %s 添加了成员' % (operator['nickName'], chatGroup['nickName']))
     url = 'http://hedy.zephyre.me/chats'
     # if (operator['userId'] == targets['userId']):
-    #     cmd = {
+    # cmd = {
     #         'chatType': 'single',
     #         'msgType': 100,
     #         'contents': {

@@ -22,7 +22,7 @@ def __init_app():
     elif runlevel == 'test':
         apiumworker_name = 'apiumworker-test'
     else:
-        raise ValueError
+        apiumworker_name = 'apiumworker-dev'
 
     # conf = get_config(['contact', 'mongo'], ['contact', (apiumworker_name, 'apiumworker')], cache_key='contact')
     # conf_yunkai = conf['apiumworker']['mongo']

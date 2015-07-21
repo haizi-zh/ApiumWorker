@@ -11,7 +11,7 @@ def worker():
     project_conf, cmd_args = parse_cl_args()
 
     for m in project_conf['modules']:
-        result = imp.find_module(m)
+        result = imp.find_module(m, ['apiumworker'])
         module = imp.load_module(m, *result)
         app = module.app.app
         app.worker_main(argv=cmd_args)
