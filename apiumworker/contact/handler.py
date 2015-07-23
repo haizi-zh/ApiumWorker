@@ -32,7 +32,7 @@ remove_members_tips = 2002
 mod_chatgroup_tips = 2003
 
 # 登录事件
-@app.task(serializer='json', name='yunkai.onLogin')
+# @app.task(serializer='json', name='yunkai.onLogin')
 def login_handler(**kwargs):
     user = kwargs['user']
     source = kwargs['source']
