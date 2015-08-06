@@ -20,6 +20,8 @@ hedy_port = get_config(cache_key='contact')['services']['hedy'].values()[0]['por
 systemId = 0
 # 普通消息类型
 common_msg = 0
+# HTML页面卡片消息
+card_msg = 18
 # cmd消息类型
 cmd_msg = 100
 # tips消息类型
@@ -214,20 +216,28 @@ def reset_password_handler(**kwargs):
 def create_user_handler(**kwargs):
     logger.info('create user')
 
-    # user = kwargs['user']
-    #
-    # url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
+    user = kwargs['user']
+
+    url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
     # create_user_message_1 = "您好，我是热爱旅行,行迹八方的派派。\r\n在这儿，没有规则，没有底限，随心所欲，畅所欲言。" \
     # "欢迎7×24小时的调戏。\r\n世界这么大，约吗？"
-    # # create_user_message_2 = "您好"
-    #
-    # # 添加服务号为好友
-    # # addServerContant = client.addContact(user['userId'], 100015)
-    #
-    # headers = {'Content-Type': 'application/json'}
-    # requests.post(url, data=json.dumps(create_user_message_1), headers=headers)
-    # # requests.post(url, data=json.dumps(create_user_message_2), headers=headers)
-    # # 将服务号添加为好友
+    # create_user_message_2 = "您好"
+    data = {
+        'msgType': card_msg,
+        'contents': {
+            'title': '梦婷带我们看世界',
+            'desc': '哈哈，好大啊',
+            'image': 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg',
+            'url': 'http://m.creatby.com/manage/book/b10qbu/'
+        }
+    }
+    # 添加服务号为好友
+    # addServerContant = client.addContact(user['userId'], 100015)
+
+    headers = {'Content-Type': 'application/json'}
+    requests.post(url, data=json.dumps(data), headers=headers)
+    # requests.post(url, data=json.dumps(create_user_message_2), headers=headers)
+    # 将服务号添加为好友
 
 
 # 创建群组事件
