@@ -228,7 +228,7 @@ def create_user_handler(**kwargs):
         'chatType': 'single',
         'contents': '%s' % json.dumps(contents),
         'receiver': user['userId'],
-        'sender': 10000
+        'sender': systemId
     }
     # 添加服务号为好友
     # addServerContant = client.addContact(user['userId'], 100015)
