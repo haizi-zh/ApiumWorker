@@ -6,6 +6,7 @@ __author__ = 'zephyre'
 from celery.utils.log import get_task_logger
 from apiumworker.contact.app import app
 from apiumworker.etcd_conf import get_config
+from urlparse import urljoin
 
 import requests
 
@@ -13,6 +14,8 @@ logger = get_task_logger('apium')
 
 hedy_host = get_config(cache_key='contact')['services']['hedy'].values()[0]['host']
 hedy_port = get_config(cache_key='contact')['services']['hedy'].values()[0]['port']
+
+essay_host = get_config(cache_key='contact')['apiumworker']['essayHost']
 
 # 系统常量
 
@@ -43,7 +46,8 @@ def _send_app_intro(receiver_id):
     :return:
     """
     title = u'旅行派的正确打开方式'
-    url = 'http://essay.lvxingpai.com/2015080701/index.html'
+    href = '/2015080701/index.html'
+    url = urljoin(essay_host, href)
     desc = None
     image = 'http://images.taozilvxing.com/lvxingpai_logo_v1.png'
     message = _build_html_message(10000, receiver_id, title, url, desc, image)
@@ -59,7 +63,8 @@ def _send_mt_message(receiver_id):
     title = u'将世界走出自己的模样'
     desc = u'一个人，14个国家，367个日夜，48266公里路'
     image = 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg'
-    url = 'http://essay.lvxingpai.com/2015072801/index.html'
+    href = '/2015072801/index.html'
+    url = urljoin(essay_host, href)
     message = _build_html_message(10000, receiver_id, title, url, desc, image)
     _send_message(message)
 
