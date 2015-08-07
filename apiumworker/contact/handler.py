@@ -34,7 +34,7 @@ remove_members_tips = 2002
 mod_chatgroup_tips = 2003
 
 # 登录事件
-# @app.task(serializer='json', name='yunkai.onLogin')
+@app.task(serializer='json', name='yunkai.onLogin')
 def login_handler(**kwargs):
     user = kwargs['user']
     source = kwargs['source']
@@ -215,13 +215,8 @@ def reset_password_handler(**kwargs):
 @app.task(serializer='json', name='yunkai.onCreateUser')
 def create_user_handler(**kwargs):
     logger.info('create user')
-
     user = kwargs['user']
-
     url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
-    # create_user_message_1 = "您好，我是热爱旅行,行迹八方的派派。\r\n在这儿，没有规则，没有底限，随心所欲，畅所欲言。" \
-    # "欢迎7×24小时的调戏。\r\n世界这么大，约吗？"
-    # create_user_message_2 = "您好"
     contents = {
         'title': '梦婷带我们看世界',
         'desc': '哈哈，好大啊',
@@ -237,11 +232,9 @@ def create_user_handler(**kwargs):
     }
     # 添加服务号为好友
     # addServerContant = client.addContact(user['userId'], 100015)
-
     headers = {'Content-Type': 'application/json'}
     requests.post(url, data=json.dumps(data), headers=headers)
-    # requests.post(url, data=json.dumps(create_user_message_2), headers=headers)
-    # 将服务号添加为好友
+
 
 
 # 创建群组事件
