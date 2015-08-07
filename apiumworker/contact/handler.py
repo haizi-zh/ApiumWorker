@@ -222,14 +222,18 @@ def create_user_handler(**kwargs):
     # create_user_message_1 = "您好，我是热爱旅行,行迹八方的派派。\r\n在这儿，没有规则，没有底限，随心所欲，畅所欲言。" \
     # "欢迎7×24小时的调戏。\r\n世界这么大，约吗？"
     # create_user_message_2 = "您好"
+    contents = {
+        'title': '梦婷带我们看世界',
+        'desc': '哈哈，好大啊',
+        'image': 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg',
+        'url': 'http://m.creatby.com/manage/book/b10qbu/'
+    }
     data = {
         'msgType': card_msg,
-        'contents': {
-            'title': '梦婷带我们看世界',
-            'desc': '哈哈，好大啊',
-            'image': 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg',
-            'url': 'http://m.creatby.com/manage/book/b10qbu/'
-        }
+        'chatType': 'single',
+        'contents': '%s' % json.dumps(contents),
+        'receiver': 201004,
+        'sender': 10000
     }
     # 添加服务号为好友
     # addServerContant = client.addContact(user['userId'], 100015)
