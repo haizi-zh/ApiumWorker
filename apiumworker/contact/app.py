@@ -31,7 +31,7 @@ def __init_app():
     # conf = get_config(['smscenter', 'rabbitmq'], ['smscenter', (apiumworker_name, 'apiumworker')], cache_key='sms')
     # conf_rabbitmq = conf['apiumworker']['rabbitmq']
     # service_rabbitmq = conf['services']['rabbitmq']
-    conf = get_config(['yunkai', 'rabbitmq', ('hedy-dev', 'hedy')], [(apiumworker_name, 'apiumworker')],
+    conf = get_config(['yunkai', 'rabbitmq', 'hedy'], [(apiumworker_name, 'apiumworker')],
                       cache_key='contact')
     # conf_name = conf['contact']['name']#contact
     # conf_port = conf['contact-dev']['port']#9000

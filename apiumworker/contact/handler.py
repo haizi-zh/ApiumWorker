@@ -32,25 +32,106 @@ add_members_tips = 2001
 remove_members_tips = 2002
 # 修改讨论组信息tips类型
 mod_chatgroup_tips = 2003
+# 派派
+paipai = 10000
+
+
+def _send_app_intro(receiver_id):
+    """
+    发送APP简介的消息
+    :param receiver_id:
+    :return:
+    """
+    title = u'旅行派的正确打开方式'
+    url = 'http://essay.lvxingpai.com/2015080701/index.html'
+    desc = None
+    image = 'http://images.taozilvxing.com/lvxingpai_logo_v1.png'
+    message = _build_html_message(10000, receiver_id, title, url, desc, image)
+    _send_message(message)
+
+
+def _send_mt_message(receiver_id):
+    """
+    发送梦婷的HTML页面
+    :param receiver_id:
+    :return:
+    """
+    title = u'将世界走出自己的模样'
+    desc = u'一个人，14个国家，367个日夜，48266公里路'
+    image = 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg'
+    url = 'http://essay.lvxingpai.com/2015072801/index.html'
+    message = _build_html_message(10000, receiver_id, title, url, desc, image)
+    _send_message(message)
+
+
+def _build_text_message(sender_id, receiver_id, text):
+    """
+    发送纯文本消息
+    :param sender_id:
+    :param receiver_id:
+    :param text:
+    :return:
+    """
+    return {
+        'msgType': 0,
+        'chatType': 'single',
+        'contents': text,
+        'receiver': receiver_id,
+        'sender': sender_id
+    }
+
+
+def _build_html_message(sender_id, receiver_id, title, url, desc=None, image=None):
+    """
+    发送HTML类型的消息
+    :param user_id:
+    :param url:
+    :return:
+    """
+    contents = {
+        'title': title,
+        'desc': desc if desc else '',
+        'url': url
+    }
+    if image:
+        contents['image'] = image
+
+    return {
+        'msgType': card_msg,
+        'chatType': 'single',
+        'contents': json.dumps(contents),
+        'receiver': receiver_id,
+        'sender': sender_id
+    }
+
+
+def _send_message(message):
+    """
+    发送一条单聊消息
+    :param message:
+    :return:
+    """
+    server_addr = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
+    headers = {'Content-Type': 'application/json'}
+    requests.post(server_addr, data=json.dumps(message), headers=headers)
+
 
 # 登录事件
 @app.task(serializer='json', name='yunkai.onLogin')
 def login_handler(**kwargs):
+    logger.info('create user')
     user = kwargs['user']
-    source = kwargs['source']
+    if user['userId'] != 100056:
+        return
 
-    logger.info('%d %s %s' % (user['userId'], user['nickName'], source))
-    url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')  # hedylogos发消息接口
-    welcome = u'欢迎回来'
-    headers = {'Content-Type': 'application/json'}
-    message = {
-        'chatType': 'single',
-        'contents': welcome,
-        'msgType': common_msg,
-        'receiver': user['userId'],
-        'sender': systemId
-    }
-    requests.post(url, data=json.dumps(message), headers=headers)
+    user_id = user['userId']
+
+    _send_app_intro(user_id)
+
+    text = u'本期旅行达人推荐：梦婷MT，将世界走出自己的模样。'
+    _send_message(_build_text_message(10000, user_id, text))
+
+    _send_mt_message(user_id)
 
 
 # 用户修改信息事件
@@ -216,25 +297,13 @@ def reset_password_handler(**kwargs):
 def create_user_handler(**kwargs):
     logger.info('create user')
     user = kwargs['user']
-    url = 'http://%s:%d%s' % (hedy_host, hedy_port, '/chats')
-    contents = {
-        'title': '梦婷带我们看世界',
-        'desc': '哈哈，好大啊',
-        'image': 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg',
-        'url': 'http://m.creatby.com/manage/book/b10qbu/'
-    }
-    data = {
-        'msgType': card_msg,
-        'chatType': 'single',
-        'contents': '%s' % json.dumps(contents),
-        'receiver': user['userId'],
-        'sender': systemId
-    }
-    # 添加服务号为好友
-    # addServerContant = client.addContact(user['userId'], 100015)
-    headers = {'Content-Type': 'application/json'}
-    requests.post(url, data=json.dumps(data), headers=headers)
 
+    user_id = user['userId']
+
+    _send_app_intro(user_id)
+    text = u'本期旅行达人推荐：梦婷MT，将世界走出自己的模样。'
+    _send_message(_build_text_message(10000, user_id, text))
+    _send_mt_message(user_id)
 
 
 # 创建群组事件
