@@ -227,7 +227,7 @@ def create_user_handler(**kwargs):
         'msgType': card_msg,
         'chatType': 'single',
         'contents': '%s' % json.dumps(contents),
-        'receiver': 201004,
+        'receiver': user['userId'],
         'sender': 10000
     }
     # 添加服务号为好友
