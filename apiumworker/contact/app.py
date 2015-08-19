@@ -9,32 +9,28 @@ def __init_app():
     from thrift.transport import TSocket
     from thrift.transport import TTransport
     from thrift.protocol import TBinaryProtocol
-    from apiumworker.global_conf import parse_cl_args
     from apiumworker.etcd_conf import get_config
+    import os
 
-    project_conf, _ = parse_cl_args()
+    runlevel = os.getenv('APIUMWORKER_RUN_LEVEL', 'dev')
 
-    runlevel = project_conf['runlevel']
     if runlevel == 'production':
         apiumworker_name = 'apiumworker'
     elif runlevel == 'dev':
         apiumworker_name = 'apiumworker-dev'
-    elif runlevel == 'test':
-        apiumworker_name = 'apiumworker-test'
     else:
-        apiumworker_name = 'apiumworker'
+        assert False
 
-    # conf = get_config(['contact', 'mongo'], ['contact', (apiumworker_name, 'apiumworker')], cache_key='contact')
-    # conf_yunkai = conf['apiumworker']['mongo']
-    # service_yunkai = conf['services']['mongo']
+    # 获得服务列表
+    if runlevel == 'production':
+        services = ['yunkai', 'rabbitmq', 'hedy']
+    elif runlevel == 'dev':
+        services = [('yunkai-dev', 'yunkai'), 'rabbitmq', ('hedy-dev', 'hedy')]
+    else:
+        assert False
 
-    # conf = get_config(['smscenter', 'rabbitmq'], ['smscenter', (apiumworker_name, 'apiumworker')], cache_key='sms')
-    # conf_rabbitmq = conf['apiumworker']['rabbitmq']
-    # service_rabbitmq = conf['services']['rabbitmq']
-    conf = get_config(['yunkai', 'rabbitmq', 'hedy'], [(apiumworker_name, 'apiumworker')],
+    conf = get_config(services, [(apiumworker_name, 'apiumworker')],
                       cache_key='contact')
-    # conf_name = conf['contact']['name']#contact
-    # conf_port = conf['contact-dev']['port']#9000
 
     server_entries = conf['services']['yunkai'].values()
     # 默认只使用第一个节点
