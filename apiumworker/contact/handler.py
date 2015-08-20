@@ -310,6 +310,15 @@ def create_user_handler(**kwargs):
     _send_message(_build_text_message(10000, user_id, text))
     _send_mt_message(user_id)
 
+    guide_contents = {
+        "guideId": "55d598e2d174911f789ca3cd",
+        "action": "fork"
+    }
+    server_addr = 'http://api.lvxingpai.com/app/users/%d/guides' % user_id
+    headers = {'Content-Type': 'application/json'}
+    requests.post(server_addr, data=json.dumps(guide_contents), headers=headers)
+
+
 
 # 创建群组事件
 # @app.task(serializer='json', name='yunkai.onCreateChatGroup')
