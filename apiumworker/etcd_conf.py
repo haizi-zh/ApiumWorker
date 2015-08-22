@@ -1,33 +1,32 @@
 # coding=utf-8
 import requests
+from requests.exceptions import RequestException
 
 
 __author__ = 'zephyre'
 
 
-def get_etcd_host():
+# 缓存的配置信息
+cached_conf_map = {}
+
+
+def get_etcd_endpoints():
+    """
+    通过ETCD_ADDRESSES环境变量，获得etcd服务器的地址。默认情况下，ETCD_ADDRESSES的值为etcd:2379
+    :return: [ "http://192.168.100.2:1234", "http://192.168.100.3:2345" ]
+    """
     import os
 
-    val = os.getenv('ETCD_HOST')
-    if val is None:
-        print 'Cannot find environment variable ETCD_HOST, use "etcd" as default.'
-        val = 'etcd'
-    return val
+    def get_endpoint(addr):
+        """
+        根据addr，从其中获得("192.168.100.1", 2345)
 
+        :param addr: 格式：192.168.100.1:2345
+        """
+        return 'http://%s' % addr
 
-def get_etcd_port():
-    import os
-
-    val = os.getenv('ETCD_PORT')
-    if val is None:
-        print 'Cannot find environment variable ETCD_PORT, use 2379 as default.'
-        val = 2379
-    else:
-        val = int(val)
-    return val
-
-
-etcd_url = 'http://%s:%d' % (get_etcd_host(), get_etcd_port())
+    addresses = filter(bool, os.getenv('ETCD_ADDRESSES', 'etcd:2379').split(','))
+    return map(get_endpoint, addresses)
 
 
 def get_service(service_name, alias):
@@ -44,7 +43,7 @@ def get_service(service_name, alias):
     :param alias: 服务别名
     :return:
     """
-    url = '%s/v2/keys/backends/%s' % (etcd_url, service_name)
+    urls = ['%s/v2/keys/backends/%s' % (etcd_addr, service_name) for etcd_addr in get_etcd_endpoints()]
 
     def get_service_entry(entry):
         """
@@ -66,16 +65,20 @@ def get_service(service_name, alias):
         return key, {'host': host, 'port': port}
 
     try:
-        nodes = requests.get(url).json()['node']['nodes']
+        nodes = request(urls)['node']['nodes']
         return {alias: dict(map(get_service_entry, nodes))}
     except (KeyError, IndexError, ValueError):
         return None
 
 
-_conf_map = {}
-
-
 def build_conf(node, alias=None):
+    """
+    获得配置信息
+
+    :param node:
+    :param alias:
+    :return:
+    """
     current_key = alias or node['key'].split('/')[-1]
     if 'dir' in node and node['dir'] and 'nodes' in node and node['nodes']:
         m = {}
@@ -88,9 +91,36 @@ def build_conf(node, alias=None):
         return None
 
 
+def request(url_list):
+    """
+    根据url_list，依次发送HTTP请求，并返回相应的JSON响应。如果一个请求失败，则进行下一个。如果全部失败，则抛出最后的异常。
+    :param url_list:
+    :return:
+    """
+    last_exception = ValueError('url_list is empty')
+
+    for url in url_list:
+        try:
+            return requests.get(url).json()
+        except (ValueError, RequestException) as e:
+            last_exception = e
+            continue
+
+    raise last_exception
+
+
 def get_config(service_names=None, conf_names=None, cache_key=None, force_refresh=False):
-    if not force_refresh and cache_key and cache_key in _conf_map:
-        return _conf_map[cache_key]
+    """
+    给定服务键名和配置键名，获得所有的配置信息
+    :param service_names: 服务列表。具有两种形式。1. 指定键名：[ "rabbitmq", "mongodb" ]。
+    2. 指定键名和别名：[ ("rabbitmq-node1", "rabbitmq"), ("mongodb-master", "mongodb") ]。这两种形式可以混合使用。
+    :param conf_names: 配置信息列表。和服务列表类似，也具有具有别名和不具有别名这两种形式。
+    :param cache_key: 如果指定了cache_key：取得的数据会被缓存，同时今后也可以根据cache_key取出
+    :param force_refresh: 强制刷新缓存
+    :return:
+    """
+    if not force_refresh and cache_key and cache_key in cached_conf_map:
+        return cached_conf_map[cache_key]
 
     def merge_dicts(*dict_args):
         """
@@ -120,8 +150,8 @@ def get_config(service_names=None, conf_names=None, cache_key=None, force_refres
     conf_map = {}
     for entry in conf_names if conf_names is not None else []:
         name, alias = build_tuple(entry)
-        url = '%s/v2/keys/project-conf/%s?recursive=true' % (etcd_url, name)
-        data = requests.get(url).json()
+        urls = ['%s/v2/keys/project-conf/%s?recursive=true' % (etcd_url, name) for etcd_url in get_etcd_endpoints()]
+        data = request(urls)
         if 'node' not in data:
             continue
         else:
@@ -134,7 +164,7 @@ def get_config(service_names=None, conf_names=None, cache_key=None, force_refres
     config = merge_dicts({'services': services}, conf_map, project_conf)
 
     if cache_key:
-        _conf_map[cache_key] = config
+        cached_conf_map[cache_key] = config
 
     return config
 
