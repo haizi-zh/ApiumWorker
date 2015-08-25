@@ -63,7 +63,7 @@ def _send_mt_message(receiver_id):
     title = u'将世界走出自己的模样'
     desc = u'一个人，14个国家，367个日夜，48266公里路'
     image = 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg'
-    href = '/2015082401/index.html'
+    href = '/2015072801/index.html'
     url = urljoin(essay_host, href)
     message = _build_html_message(10000, receiver_id, title, url, desc, image)
     _send_message(message)
