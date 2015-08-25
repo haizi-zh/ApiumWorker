@@ -12,10 +12,10 @@ def parse_cl_args():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--module', '-m', nargs='*', choices=['sms', 'contact'])
-    parser.add_argument('--runlevel', choices=['production', 'dev', 'test'])
+    # parser.add_argument('--runlevel', choices=['production', 'dev', 'test'])
     extracted_args, left_over = parser.parse_known_args()
 
     args = sys.argv[:1]
     args.extend(left_over)
 
-    return {'modules': extracted_args.module, 'runlevel': extracted_args.runlevel}, args
+    return {'modules': extracted_args.module}, args

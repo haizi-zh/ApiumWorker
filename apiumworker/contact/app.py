@@ -2,16 +2,32 @@
 __author__ = 'pengyt'
 
 
-def __init_app():
-    from celery import Celery
-    from apiumworker.contact.users import userservice
-    from thrift import Thrift
+def _init_thrift_client(host, port):
+    """
+    创建Thrift client
+    :param host: 主机地址
+    :param port: 端口
+    :return: Thrift client对象
+    """
     from thrift.transport import TSocket
     from thrift.transport import TTransport
     from thrift.protocol import TBinaryProtocol
-    from apiumworker.etcd_conf import get_config
-    import os
+    from apiumworker.contact.users import userservice
 
+    socket = TSocket.TSocket(host, port)
+    tranport = TTransport.TFramedTransport(socket)
+    protocol = TBinaryProtocol.TBinaryProtocol(tranport)
+    tranport.open()
+
+    return userservice.Client(protocol)
+
+
+def _init():
+    import os
+    from apiumworker.etcd_conf import get_config
+    from apiumworker import init_celery_app
+
+    # 通过环境变量APIUMWORKER_RUN_LEVEL获得运行模式。默认情况下为dev。
     runlevel = os.getenv('APIUMWORKER_RUN_LEVEL', 'dev')
 
     if runlevel == 'production':
@@ -30,37 +46,24 @@ def __init_app():
         assert False
 
     conf = get_config(services, [(apiumworker_name, 'apiumworker')],
-                      cache_key='contact')
+                      cache_key='apiumworker.contact')
 
     server_entries = conf['services']['yunkai'].values()
     # 默认只使用第一个节点
     host = server_entries[0]['host']
     port = server_entries[0]['port']
 
-    conf_rabbitmq = conf['apiumworker']['rabbitmq']
-    # 默认使用第一个RabbitMQ节点
-    service_rabbitmq = conf['services']['rabbitmq'].values()[0]
+    rabbitmq_entries = conf['services']['rabbitmq'].values()
 
-    from apiumworker.contact import celery_config
+    amqp_conf = conf['apiumworker']['rabbitmq']
+    amqp_conf['host'] = rabbitmq_entries[0]['host']
+    amqp_conf['port'] = rabbitmq_entries[0]['port']
 
-    the_app = Celery('ApiumWorker', broker='amqp://%s:%s@%s:%d/%s' %
-                                           (conf_rabbitmq['username'], conf_rabbitmq['password'],
-                                            service_rabbitmq['host'], service_rabbitmq['port'],
-                                            conf_rabbitmq['virtualhost']))
-    the_app.config_from_object(celery_config)
+    thrift_client = _init_thrift_client(host, port)
+    the_app = init_celery_app(amqp_conf)
 
-    try:
-        socket = TSocket.TSocket(host, port)
-        tranport = TTransport.TFramedTransport(socket)
-        protocol = TBinaryProtocol.TBinaryProtocol(tranport)
-        tranport.open()
-        client = userservice.Client(protocol)
-
-        return client, the_app
-    except Thrift.TException, tx:
-        print '%s' % (tx.message)
-        raise
+    return the_app, thrift_client
 
 
-client, app = __init_app()
+app, client = _init()
 
