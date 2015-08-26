@@ -91,7 +91,7 @@ def build_conf(node, alias=None):
         return None
 
 
-def request(url_list):
+def request(url_list, method='GET', **kwargs):
     """
     根据url_list，依次发送HTTP请求，并返回相应的JSON响应。如果一个请求失败，则进行下一个。如果全部失败，则抛出最后的异常。
     :param url_list:
@@ -101,7 +101,7 @@ def request(url_list):
 
     for url in url_list:
         try:
-            return requests.get(url).json()
+            return requests.request(method, url, **kwargs).json()
         except (ValueError, RequestException) as e:
             last_exception = e
             continue

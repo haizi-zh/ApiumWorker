@@ -62,6 +62,10 @@ def _init():
     thrift_client = _init_thrift_client(host, port)
     the_app = init_celery_app(amqp_conf)
 
+    from apiumworker.contact import celery_config
+
+    the_app.config_from_object(celery_config)
+
     return the_app, thrift_client
 
 
