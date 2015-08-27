@@ -145,10 +145,10 @@ def paipai_filter(**kwargs):
         _send_message(msg2)
 
     if chat_type == 'single' and msg_type == 0:
-        m = re.search(ur'^我要京东卡.*(1\d{10})', contents)
+        m = re.search(ur'京东卡.*(1\d{10})', contents)
         if m:
             jd_lottery(m.group(1))
-        elif contents.strip() == u'我要码' and sender == 100056:
+        elif contents.strip() == u'我要码':
             letv_qr_code()
 
 
