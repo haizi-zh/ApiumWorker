@@ -49,7 +49,7 @@ def _send_app_intro(receiver_id):
     href = '/2015080701/index.html'
     url = urljoin(essay_host, href)
     desc = None
-    image = 'http://images.taozilvxing.com/lvxingpai_logo_v1.png'
+    image = 'http://essay.lvxingpai.com/2015090201/staticfs/cover.png'
     message = _build_html_message(10000, receiver_id, title, url, desc, image)
     _send_message(message)
 
@@ -60,10 +60,10 @@ def _send_mt_message(receiver_id):
     :param receiver_id:
     :return:
     """
-    title = u'将世界走出自己的模样'
-    desc = u'一个人，14个国家，367个日夜，48266公里路'
+    title = u'带上画笔去旅行'
+    desc = u'美女画师背着画笔任性游走异国他乡'
     image = 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg'
-    href = '/2015072801/index.html'
+    href = '/2015090201/index.html'
     url = urljoin(essay_host, href)
     message = _build_html_message(10000, receiver_id, title, url, desc, image)
     _send_message(message)
@@ -306,7 +306,7 @@ def create_user_handler(**kwargs):
     user_id = user['userId']
 
     _send_app_intro(user_id)
-    text = u'本期旅行达人推荐：梦婷MT，将世界走出自己的模样。'
+    text = u'本期旅行达人推荐：花二刀，背着画板去旅行的美女画家。'
     _send_message(_build_text_message(10000, user_id, text))
     _send_mt_message(user_id)
 
