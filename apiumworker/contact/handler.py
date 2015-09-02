@@ -49,7 +49,7 @@ def _send_app_intro(receiver_id):
     href = '/2015080701/index.html'
     url = urljoin(essay_host, href)
     desc = None
-    image = 'http://essay.lvxingpai.com/2015090201/staticfs/cover.png'
+    image = 'http://images.taozilvxing.com/lvxingpai_logo_v1.png'
     message = _build_html_message(10000, receiver_id, title, url, desc, image)
     _send_message(message)
 
@@ -62,7 +62,7 @@ def _send_mt_message(receiver_id):
     """
     title = u'带上画笔去旅行'
     desc = u'美女画师背着画笔任性游走异国他乡'
-    image = 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg'
+    image = 'http://essay.lvxingpai.com/2015090201/staticfs/cover.png'
     href = '/2015090201/index.html'
     url = urljoin(essay_host, href)
     message = _build_html_message(10000, receiver_id, title, url, desc, image)
