@@ -45,7 +45,7 @@ def _send_app_intro(receiver_id):
     :param receiver_id:
     :return:
     """
-    title = u'旅行派的正确打开方式'
+    title = u'欢迎亲爱的使用旅行派，有什么问题都可以跟派派说，派派一定会把你服务到满意为止~\n除了派派，我们这儿还有后宫三千旅行达人，天南海北异域风情款款都有，包你满意~\n我们提供的服务包括但不限于：\n达人互动咨询\n景点信息搜搜\n行程一键生成\n更多服务和知(zi)识(shi)，嗷嗷待哺的等着你来解锁哟～'
     href = '/2015080701/index.html'
     url = urljoin(essay_host, href)
     desc = None
