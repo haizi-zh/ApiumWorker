@@ -37,7 +37,7 @@ remove_members_tips = 2002
 mod_chatgroup_tips = 2003
 # 派派
 paipai = 10000
-
+wenwen = 10001
 
 def _send_app_intro(receiver_id):
     """
@@ -308,6 +308,10 @@ def create_user_handler(**kwargs):
    # _send_app_intro(user_id)
     title = u'欢迎亲爱的使用旅行派，有什么问题都可以跟派派说，派派一定会把你服务到满意为止~\n\n除了派派，我们这儿还有后宫三千旅行达人，天南海北异域风情款款都有，包你满意~\n我们提供的服务包括但不限于：\n达人互动咨询\n景点信息搜搜\n行程一键生成\n\n更多服务和知(zi)识(shi)，嗷嗷待哺的等着你来解锁哟～'
     _send_message(_build_text_message(10000, user_id, title))
+    paipaiDefaultMsg = u'我是客服派派，欢迎使用旅行派'
+    _send_message(_build_text_message(paipai, user_id, paipaiDefaultMsg))
+    wenwenDefaultMsg = u'旅行攻略可以找我问问'
+    _send_message(_build_text_message(wenwen, user_id, wenwenDefaultMsg))
     text = u'本期旅行达人推荐：花二刀，背着画板去旅行的美女画家。'
     _send_message(_build_text_message(10000, user_id, text))
     _send_mt_message(user_id)
