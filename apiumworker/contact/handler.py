@@ -37,7 +37,7 @@ remove_members_tips = 2002
 mod_chatgroup_tips = 2003
 # 派派
 paipai = 10000
-
+wenwen = 10001
 
 def _send_app_intro(receiver_id):
     """
@@ -45,7 +45,7 @@ def _send_app_intro(receiver_id):
     :param receiver_id:
     :return:
     """
-    title = u'旅行派的正确打开方式'
+    title = u'欢迎亲爱的使用旅行派，有什么问题都可以跟派派说，派派一定会把你服务到满意为止~\n除了派派，我们这儿还有后宫三千旅行达人，天南海北异域风情款款都有，包你满意~\n我们提供的服务包括但不限于：\n达人互动咨询\n景点信息搜搜\n行程一键生成\n更多服务和知(zi)识(shi)，嗷嗷待哺的等着你来解锁哟～'
     href = '/2015080701/index.html'
     url = urljoin(essay_host, href)
     desc = None
@@ -60,10 +60,10 @@ def _send_mt_message(receiver_id):
     :param receiver_id:
     :return:
     """
-    title = u'将世界走出自己的模样'
-    desc = u'一个人，14个国家，367个日夜，48266公里路'
-    image = 'http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg'
-    href = '/2015072801/index.html'
+    title = u'带上画笔去旅行'
+    desc = u'美女画师背着画笔任性游走异国他乡'
+    image = 'http://essay.lvxingpai.com/2015090201/staticfs/cover.png'
+    href = '/2015090201/index.html'
     url = urljoin(essay_host, href)
     message = _build_html_message(10000, receiver_id, title, url, desc, image)
     _send_message(message)
@@ -305,9 +305,13 @@ def create_user_handler(**kwargs):
 
     user_id = user['userId']
 
-    _send_app_intro(user_id)
-    text = u'本期旅行达人推荐：梦婷MT，将世界走出自己的模样。'
-    _send_message(_build_text_message(10000, user_id, text))
+   # _send_app_intro(user_id)
+    title = u'欢迎亲爱的使用旅行派，有什么问题都可以跟派派说，派派一定会把你服务到满意为止~\n\n除了派派，我们这儿还有后宫三千旅行达人，天南海北异域风情款款都有，包你满意~\n我们提供的服务包括但不限于：\n达人互动咨询\n景点信息搜搜\n行程一键生成\n\n更多服务和知(zi)识(shi)，嗷嗷待哺的等着你来解锁哟～'
+    _send_message(_build_text_message(paipai, user_id, title))
+    wenwenDefaultMsg = u'旅行攻略可以找我问问'
+    _send_message(_build_text_message(wenwen, user_id, wenwenDefaultMsg))
+    text = u'本期旅行达人推荐：花二刀，背着画板去旅行的美女画家。'
+    _send_message(_build_text_message(paipai, user_id, text))
     _send_mt_message(user_id)
 
     guide_contents = {
