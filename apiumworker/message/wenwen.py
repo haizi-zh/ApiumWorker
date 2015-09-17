@@ -18,8 +18,7 @@ def process_text_message(text_message):
     :param text_message: 消息内容
     :return:
     """
-    # semantics = get_semantics(text_message['contents'])
-    semantics = {}
+    semantics = get_semantics(text_message['contents'])
     if 'service' in semantics:
         service = semantics['service']
         if service == u'景点':
