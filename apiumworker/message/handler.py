@@ -1,7 +1,6 @@
 # coding=utf-8
 __author__ = 'zephyre'
 
-import re
 import json
 
 from qiniu import Auth
@@ -123,7 +122,7 @@ def paipai_filter(**kwargs):
     # contents = kwargs['contents'].strip()
 
     # def jd_lottery(tel):
-    #     logger.info(u'Lottery registered for %d: %s' % (sender, tel))
+    # logger.info(u'Lottery registered for %d: %s' % (sender, tel))
     #
     #     # 注册到etcd服务器中。默认30天过期
     #     ttl = 30 * 24 * 3600
@@ -160,9 +159,14 @@ def wenwen_filter(**kwargs):
     """
     sender = kwargs['senderId']
     chat_type = kwargs['chatType']
+    message_type = kwargs['msgType']
 
-    if chat_type == 'single':
-        contents = u'亲爱的，我是问问，你的旅行贴心小助手。今后，你若是有任何旅行方面的问题，随时都可以来和我讨论。不过呢，我现在还' \
-                   u'正在旅行大学里读书充电呢。所以，还请耐心一点点，稍等一小会儿，待我毕业以后就来陪你~'
-        msg = _build_text_message(USERID_WENWEN, sender, contents)
-        _send_message(msg)
+    if chat_type == 'single' and message_type == 0:
+        from apiumworker.message.wenwen import process_text_message
+
+        process_text_message(kwargs)
+
+        # contents = u'亲爱的，我是问问，你的旅行贴心小助手。今后，你若是有任何旅行方面的问题，随时都可以来和我讨论。不过呢，我现在还' \
+        # u'正在旅行大学里读书充电呢。所以，还请耐心一点点，稍等一小会儿，待我毕业以后就来陪你~'
+        # msg = _build_text_message(USERID_WENWEN, sender, contents)
+        # _send_message(msg)

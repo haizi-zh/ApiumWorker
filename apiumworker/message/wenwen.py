@@ -12,14 +12,32 @@ semat_port = 9588
 semat_client = init_client(semat_host, semat_port, SemaProcessor)
 
 
-def get_semantics(message):
-    semantics = json.loads(semat_client.understand(message))
+def process_text_message(text_message):
+    """
+    处理发送给问问的纯文本消息
+    :param text_message: 消息内容
+    :return:
+    """
+    # semantics = get_semantics(text_message['contents'])
+    semantics = {}
     if 'service' in semantics:
         service = semantics['service']
-        if service==u'景点':
+        if service == u'景点':
             proc_viewspots(semantics['semantic'])
-        elif service ==u'餐厅':
+        elif service == u'餐厅':
             proc_restaurants(semantics['semantic'])
+        else:
+            pass
+
+
+def get_semantics(message):
+    """
+    调用讯飞接口，获得语义理解结果
+    :param message:
+    :return:
+    """
+    return json.loads(semat_client.understand(message))
+
 
 
 def proc_viewspots(semantics):
