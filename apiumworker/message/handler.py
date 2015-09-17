@@ -116,40 +116,41 @@ def paipai_filter(**kwargs):
     处理派派收到的消息
     :return:
     """
-    sender = kwargs['senderId']
-    chat_type = kwargs['chatType']
-    msg_type = kwargs['msgType']
-    contents = kwargs['contents'].strip()
+    pass
+    # sender = kwargs['senderId']
+    # chat_type = kwargs['chatType']
+    # msg_type = kwargs['msgType']
+    # contents = kwargs['contents'].strip()
 
-    def jd_lottery(tel):
-        logger.info(u'Lottery registered for %d: %s' % (sender, tel))
-
-        # 注册到etcd服务器中。默认30天过期
-        ttl = 30 * 24 * 3600
-        key = '/lottery20150826/%d?ttl=%d' % (sender, ttl)
-        r = etcd_request(key, method='PUT', data={'value': tel})
-        logger.debug(r)
-
-        new_contents = u'亲爱的，已经收到您参与活动的信息了，派派会在活动结束后3个工作日内通知您中奖结果，' \
-                       u'中奖名单也会在旅行派官方微博中公布，敬请期待哟~么么哒~'
-        msg = _build_text_message(USERID_PAIPAI, sender, new_contents)
-        _send_message(msg)
-
-    def letv_qr_code():
-        msg1 = _build_text_message(USERID_PAIPAI, sender, u'乐视永久会员二维码送上，么么哒~')
-        _send_message(msg1)
-
-        key = '31434498-7d4d-4fb5-b7b4-757e01efd5f1'
-        bucket_domain = '7xirnn.com1.z0.glb.clouddn.com'
-        msg2 = _build_image_message(USERID_PAIPAI, sender, key=key, bucket_domain=bucket_domain, width=160, height=160)
-        _send_message(msg2)
-
-    if chat_type == 'single' and msg_type == 0:
-        m = re.search(ur'京东卡.*(1\d{10})', contents)
-        if m:
-            jd_lottery(m.group(1))
-        elif contents.strip() == u'我要码':
-            letv_qr_code()
+    # def jd_lottery(tel):
+    #     logger.info(u'Lottery registered for %d: %s' % (sender, tel))
+    #
+    #     # 注册到etcd服务器中。默认30天过期
+    #     ttl = 30 * 24 * 3600
+    #     key = '/lottery20150826/%d?ttl=%d' % (sender, ttl)
+    #     r = etcd_request(key, method='PUT', data={'value': tel})
+    #     logger.debug(r)
+    #
+    #     new_contents = u'亲爱的，已经收到您参与活动的信息了，派派会在活动结束后3个工作日内通知您中奖结果，' \
+    #                    u'中奖名单也会在旅行派官方微博中公布，敬请期待哟~么么哒~'
+    #     msg = _build_text_message(USERID_PAIPAI, sender, new_contents)
+    #     _send_message(msg)
+    #
+    # def letv_qr_code():
+    #     msg1 = _build_text_message(USERID_PAIPAI, sender, u'乐视永久会员二维码送上，么么哒~')
+    #     _send_message(msg1)
+    #
+    #     key = '31434498-7d4d-4fb5-b7b4-757e01efd5f1'
+    #     bucket_domain = '7xirnn.com1.z0.glb.clouddn.com'
+    #     msg2 = _build_image_message(USERID_PAIPAI, sender, key=key, bucket_domain=bucket_domain, width=160, height=160)
+    #     _send_message(msg2)
+    #
+    # if chat_type == 'single' and msg_type == 0:
+    #     m = re.search(ur'京东卡.*(1\d{10})', contents)
+    #     if m:
+    #         jd_lottery(m.group(1))
+    #     elif contents.strip() == u'我要码':
+    #         letv_qr_code()
 
 
 def wenwen_filter(**kwargs):
@@ -161,8 +162,6 @@ def wenwen_filter(**kwargs):
     chat_type = kwargs['chatType']
 
     if chat_type == 'single':
-        # contents = u'亲，欢迎使用旅行问问功能，好吧，我是个机器人，不过目前这个版本我还在完善中，敬请期待下个版本的我。'
-
         contents = u'亲爱的，我是问问，你的旅行贴心小助手。今后，你若是有任何旅行方面的问题，随时都可以来和我讨论。不过呢，我现在还' \
                    u'正在旅行大学里读书充电呢。所以，还请耐心一点点，稍等一小会儿，待我毕业以后就来陪你~'
         msg = _build_text_message(USERID_WENWEN, sender, contents)
