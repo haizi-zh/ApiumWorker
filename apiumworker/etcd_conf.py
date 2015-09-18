@@ -145,7 +145,8 @@ def get_config(service_names=None, conf_names=None, cache_key=None, force_refres
         else:
             raise ValueError
 
-    services = merge_dicts(*filter(lambda v: v, [get_service(*build_tuple(entry)) for entry in service_names]))
+    services = merge_dicts(
+        *filter(lambda v: v, [get_service(*build_tuple(entry)) for entry in (service_names if service_names else [])]))
 
     conf_map = {}
     for entry in conf_names if conf_names is not None else []:
