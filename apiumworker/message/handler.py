@@ -157,7 +157,6 @@ def wenwen_filter(**kwargs):
     处理问问收到的消息
     :return:
     """
-    sender = kwargs['senderId']
     chat_type = kwargs['chatType']
     message_type = kwargs['msgType']
 
@@ -165,6 +164,7 @@ def wenwen_filter(**kwargs):
         from apiumworker.message.wenwen import process_text_message
 
         process_text_message(kwargs)
+
 
         # contents = u'亲爱的，我是问问，你的旅行贴心小助手。今后，你若是有任何旅行方面的问题，随时都可以来和我讨论。不过呢，我现在还' \
         # u'正在旅行大学里读书充电呢。所以，还请耐心一点点，稍等一小会儿，待我毕业以后就来陪你~'

@@ -96,6 +96,22 @@ def build_locality_message(sender, receiver, loc_id, name, image=None, chat_type
     }
     return _build_message(sender, receiver, loc_data, MessageType.LOCALITY, chat_type)
 
+def build_restaurant_message(sender, receiver, loc_id, name, image=None, chat_type=ChatType.SINGLE, **kwargs):
+    """
+    构造美食消息
+    :param sender: 发送者ID
+    :param receiver: 接收者ID
+    :param loc_id: 美食ID
+    :param name: 美食名称
+    :param kwargs: 美食的其它属性。包括：desc: 美食描述
+    """
+    loc_data = {
+        'id': loc_id,
+        'name': name,
+        'image': image if image else '',
+        'desc': kwargs.get('desc', '')
+    }
+    return _build_message(sender, receiver, loc_data, MessageType.RESTAURANT, chat_type)
 
 def build_viewspot_message(sender, receiver, vs_id, name, image=None, chat_type=ChatType.SINGLE, **kwargs):
     """
@@ -132,7 +148,7 @@ def build_travelnote_message(sender, receiver, note_id, url, name, image=None, c
         'detailUrl': url,
         'desc': kwargs.get('desc', '')
     }
-    return _build_message(sender, receiver, note_data, MessageType.VIEWSPOT, chat_type)
+    return _build_message(sender, receiver, note_data, MessageType.TRAVELNOTE, chat_type)
 
 
 def send_message(message):
