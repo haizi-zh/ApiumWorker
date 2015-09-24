@@ -311,12 +311,14 @@ def create_user_handler(**kwargs):
     user_id = user['userId']
 
    # _send_app_intro(user_id)
-    title = u'欢迎亲爱的使用旅行派，有什么问题都可以跟派派说，派派一定会把你服务到满意为止~\n\n除了派派，我们这儿还有后宫三千旅行达人，天南海北异域风情款款都有，包你满意~\n我们提供的服务包括但不限于：\n达人互动咨询\n景点信息搜搜\n行程一键生成\n\n更多服务和知(zi)识(shi)，嗷嗷待哺的等着你来解锁哟～'
-    _send_message(_build_text_message(paipai, user_id, title))
+    #title = u'欢迎亲爱的使用旅行派，有什么问题都可以跟派派说，派派一定会把你服务到满意为止~\n\n除了派派，我们这儿还有后宫三千旅行达人，天南海北异域风情款款都有，包你满意~\n我们提供的服务包括但不限于：\n达人互动咨询\n景点信息搜搜\n行程一键生成\n\n更多服务和知(zi)识(shi)，嗷嗷待哺的等着你来解锁哟～'
+    #_send_message(_build_text_message(paipai, user_id, title))
     wenwenDefaultMsg = u'旅行攻略可以找我问问'
     _send_message(_build_text_message(wenwen, user_id, wenwenDefaultMsg))
     #text = u'本期旅行达人推荐：花二刀，背着画板去旅行的美女画家。'
-    text = u'【本期旅行达人分享会】\n  如何用3万元独行14国\n【分享嘉宾】\n  美女旅行家MT\n【时间】\n  2015年9月28日\n  周一晚20:00\n【地点】\n  旅行派APP群内\n【报名方式】\n  给派派发“分享会”即可入群\n  更多详情请戳↓'
+    #text = u'【本期旅行达人分享会】\n  如何用3万元独行14国\n【分享嘉宾】\n  美女旅行家MT\n【时间】\n  2015年9月28日\n  周一晚20:00\n【地点】\n  旅行派APP群内\n【报名方式】\n  给派派发“分享会”即可入群\n  更多详情请戳↓'
+    text = u'欢迎亲爱的使用旅行派~有什么问题都可以问派派哦！\n\n【本期福利】\n 如何用3万元独行14国|线上分享会，报名即送乐视视频永久会员\n【分享会主题】\n  如何用3万元独行14国\n【分享嘉宾】\n  美女旅行家MT\n【时间】\n  2015年9月28日\n  周一晚20:00\n【地点】\n 旅行派APP群内\n【报名方式】\n 给派派发“分享会”即可入群\n 更多详情请戳↓'
+
     _send_message(_build_text_message(paipai, user_id, text))
     _send_mt_message(user_id)
 
