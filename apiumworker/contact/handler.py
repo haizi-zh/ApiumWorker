@@ -60,10 +60,16 @@ def _send_mt_message(receiver_id):
     :param receiver_id:
     :return:
     """
-    title = u'带上画笔去旅行'
-    desc = u'美女画师背着画笔任性游走异国他乡'
-    image = 'http://essay.lvxingpai.com/2015090201/staticfs/cover.png'
-    href = '/2015090201/index.html'
+    #花二刀
+    #title = u'带上画笔去旅行'
+    #desc = u'美女画师背着画笔任性游走异国他乡'
+    #image = 'http://essay.lvxingpai.com/2015090201/staticfs/cover.png'
+    # href = '/2015090201/index.html'
+    #梦婷
+    title = u'将世界走出自己的模样'
+    desc = u'一个人，14个国家，367个日夜，48266公里路'
+    image = "http://taozi-uploads.qiniudn.com/avt_11000_1433748012390.jpg"
+    href = '/2015072801/index.html'
     url = urljoin(essay_host, href)
     message = _build_html_message(10000, receiver_id, title, url, desc, image)
     _send_message(message)
@@ -310,7 +316,8 @@ def create_user_handler(**kwargs):
     _send_message(_build_text_message(paipai, user_id, title))
     wenwenDefaultMsg = u'旅行攻略可以找我问问'
     _send_message(_build_text_message(wenwen, user_id, wenwenDefaultMsg))
-    text = u'本期旅行达人推荐：花二刀，背着画板去旅行的美女画家。'
+    #text = u'本期旅行达人推荐：花二刀，背着画板去旅行的美女画家。'
+    text = u'【本期旅行达人分享会】\n  如何用3万元独行14国\n【分享嘉宾】\n  美女旅行家MT\n【时间】\n  2015年9月28日\n  周一晚20:00\n【地点】\n  旅行派APP群内\n【报名方式】\n  给派派发“分享会”即可入群\n  更多详情请戳↓'
     _send_message(_build_text_message(paipai, user_id, text))
     _send_mt_message(user_id)
 
