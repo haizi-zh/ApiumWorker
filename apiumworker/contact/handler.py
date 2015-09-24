@@ -308,7 +308,6 @@ def reset_password_handler(**kwargs):
 def create_user_handler(**kwargs):
     logger.info('create user')
     user = kwargs['user']
-
     user_id = user['userId']
 
    # _send_app_intro(user_id)
