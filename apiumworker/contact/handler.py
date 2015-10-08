@@ -311,7 +311,7 @@ def create_user_handler(**kwargs):
     user_id = user['userId']
 
    # _send_app_intro(user_id)
-    title = u'欢迎亲爱的使用旅行派，有什么问题都可以跟派派说，派派一定会把你服务到满意为止~\n我们这儿还有后宫三千旅行达人和许多地方群，群里有当地派达人在等着你哟~想进群就跟派派说~\n\n我们提供的服务包括但不限于：\n达人互动咨询\n城市景点攻略\n行程一键生成\n\n更多服务和知(zi)识(shi)，嗷嗷待哺的等着你来解锁哟～'
+    title = u'欢迎亲爱的使用旅行派，有什么问题都可以跟派派说，派派一定会把你服务到满意为止~\n\n我们这儿还有后宫三千旅行达人和许多地方群，群里有当地派达人在等着你哟~想进群就跟派派说~\n\n我们提供的服务包括但不限于：\n达人互动咨询\n城市景点攻略\n行程一键生成\n更多服务和知(zi)识(shi)，嗷嗷待哺的等着你来解锁哟～'
     _send_message(_build_text_message(paipai, user_id, title))
     wenwenDefaultMsg = u'旅行攻略可以找我问问'
     _send_message(_build_text_message(wenwen, user_id, wenwenDefaultMsg))
